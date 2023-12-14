@@ -1,4 +1,4 @@
-name: Publish to NPM and Create GitHub Release
+name: NPM Publish
 
 on:
   push:

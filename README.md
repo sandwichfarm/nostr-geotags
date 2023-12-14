@@ -1,7 +1,7 @@
 # `nostr-geotags`
 
 ![](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)
-+ [![cov](https://<you>.github.io/<repo>/badges/coverage.svg)](https://github.com/<you>/<repo>/actions)
++ [![cov](https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg)](https://github.com/sandwichfarm/nostr-geotags/actions)
 
 
 ## Summary
