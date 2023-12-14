@@ -1,5 +1,5 @@
 import ngeohash from 'ngeohash';
-import { iso31661, iso31662, iso31663, ISO31661AssignedEntry, ISO31661Entry  } from 'iso-3166';
+import { iso31661, iso31662, iso31663, ISO31661AssignedEntry, ISO31662Entry, ISO31661Entry  } from 'iso-3166';
 
 interface InputData {
     lat?: number;
@@ -74,29 +74,33 @@ const generateTags = (input: InputData, opts: Options): Array<[string, string, s
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
                 // Make sure type is a valid key of ISO31661AssignedEntry
-                tags.push(['g', countryData[type as keyof ISO31661AssignedEntry], 'countryCode', `ISO-3166-1:${type}`]);
+                tags.push(['g', countryData[type as keyof ISO31661AssignedEntry], `countryCode:${type}`, `ISO-3166-1`]);
             });
         }
     }
 
     // ISO-3166-2 (region code)
-    if (opts.iso31662 && input.country && input.regionName) {
-        const regionData = iso31662.find(r => r.parent === input.country && r.name === input.regionName);
+    if (opts.iso31662 && input.countryCode && input.regionName) {
+        console.log("ISO-3166-2 processing started"); // Debugging statement
+        const regionData = iso31662.find(r => r.parent === input.countryCode && r.name === input.regionName);
         if (regionData) {
-            ['code', 'name', 'parent'].forEach((type) => {
-                tags.push(['g', regionData[type as keyof typeof regionData], 'regionCode', `ISO-3166-2:${type}`]);
+            (['code', 'name', 'parent'] as const).forEach((type) => {
+                console.log(`Processing ${type}: ${regionData[type as keyof typeof regionData]}`); // Debugging statement
+                tags.push(['g', regionData[type as keyof typeof regionData], `regionCode:${type}`, `ISO-3166-2`]);
             });
         }
     }
 
     // ISO-3166-3 (changes)
     if (opts.iso31663 && input.countryCode) {
+        console.log("ISO-3166-3 processing started"); // Debugging statement
         const countryData = iso31661.find((c: ISO31661Entry) => c.alpha2 === input.countryCode);
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
-                // Here we assert that type is a key of ISO31661Entry
                 const value = countryData[type as keyof ISO31661Entry];
-                tags.push(['g', getUpdatedIso31663Value(type, value), 'countryCode', `ISO-3166-3:${type}`]);
+                const updatedValue = getUpdatedIso31663Value(type, value);
+                console.log(`Processing ${type}: ${value} -> ${updatedValue}`); // Debugging statement
+                tags.push(['g', updatedValue, `countryCode:${type}`, `ISO-3166-3`]);
             });
         }
     }
@@ -130,8 +134,8 @@ export default (input: InputData | null, opts?: Options): Array<[string, string,
     if (typeof input !== 'object')
         throw new Error('Input must be an object');
     opts = {
-        iso31661: false,
-        iso31662: true, 
+        iso31661: true,
+        iso31662: false, 
         iso31663: false, 
         planet: false,
         geohash: true,

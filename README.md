@@ -67,8 +67,8 @@ The `options` object specifies which types of tags to generate.
 - `continent` (boolean): Include a tag for the continent. Default: `false`.
 - `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
 - `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
-- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `false`.
-- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `true`.
+- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `true`.
+- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
 - `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`.
 
 ## Response Reference
@@ -127,14 +127,17 @@ This is a response with all options enabled.
   [ 'g', 'u2m', 'geohash' ],
   [ 'g', 'u2', 'geohash' ],
   [ 'g', 'u', 'geohash' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-  [ 'g', 'Hungary', 'countryCode', 'ISO-3166-1:name' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-3:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-3:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-3:numeric' ],
-  [ 'g', 'Hungary', 'countryCode', 'ISO-3166-3:name' ],
+  [ 'g', 'HU', 'countryCode:alpha2', 'ISO-3166-1' ],
+  [ 'g', 'HUN', 'countryCode:alpha3', 'ISO-3166-1' ],
+  [ 'g', '348', 'countryCode:numeric', 'ISO-3166-1' ],
+  [ 'g', 'Hungary', 'countryCode:name', 'ISO-3166-1' ],
+  [ 'g', 'HU-BU', 'regionCode:code', 'ISO-3166-2' ],
+  [ 'g', 'Budapest', 'regionCode:name', 'ISO-3166-2' ],
+  [ 'g', 'HU', 'regionCode:parent', 'ISO-3166-2' ],
+  [ 'g', 'HU', 'countryCode:alpha2', 'ISO-3166-3' ],
+  [ 'g', 'HUN', 'countryCode:alpha3', 'ISO-3166-3' ],
+  [ 'g', '348', 'countryCode:numeric', 'ISO-3166-3' ],
+  [ 'g', 'Hungary', 'countryCode:name', 'ISO-3166-3' ],
   [ 'g', 'Budapest', 'city' ],
   [ 'g', 'Europe', 'continent' ],
   [ 'g', 'EU', 'continentCode' ],
