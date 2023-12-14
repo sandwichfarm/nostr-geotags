@@ -72,12 +72,12 @@ The `options` object specifies which types of tags to generate.
 - `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`.
 
 ## Response Reference
-The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is as follows:
+The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
 
 - The first element (`'g'`) is a constant indicating the type of tag.
-- The second element is the value of the tag, which can vary based on the input and options used.
-- The third element is the category of the tag.
-- The fourth element (optional) provides additional information or context about the tag.
+- The second element is the `value` of the tag, which can vary based on the input and options used. 
+- The third element is the `key` of the tag.
+- The fourth element (optional) is the `standard`, which is serialized with a `:` where when split `standard[0]` is the the standard's identified and `standard[1]` is the standard's value. This field is only used for ISO.
 
 ### Tag Types and Their Descriptions
 1. **GPS**: `[ 'g', '<latitude,longitude>', 'gps' ]`
