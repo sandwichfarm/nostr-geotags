@@ -10,11 +10,11 @@
 The package is available on npm and can be installed using npm, yarn, or pnpm.
 
 ```
-npm install ngeotags
+npm install nostr-geotags
 
-yarn add ngeotags
+yarn add nostr-geotags
 
-pnpm add ngeotags
+pnpm add nostr-geotags
 ```
 
 ## Usage
