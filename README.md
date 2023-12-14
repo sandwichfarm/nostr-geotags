@@ -18,10 +18,10 @@ pnpm add nostr-geotags
 ```
 
 ## Usage
-First, import `ngeotags` in your project:
+First, import `nostr-geotags` in your project:
 
 ```
-import ngeotags from 'ngeotags';
+import ngeotags from 'nostr-geotags';
 ```
 
 Then, use it to generate tags:
@@ -149,6 +149,14 @@ This is a response with all options enabled.
 Here's a basic usage example:
 
 ```
+import ngeotags from 'nostr-geotags'
+
+event = {}
+event.kind = 1
+//created_at, content etc...
+event.tags = []
+evennt.tags.push(['t', 'nostrworks'])
+
 const inputData = {
   lat: 52.5200,
   lon: 13.4050,
@@ -163,8 +171,8 @@ const options = {
   iso31661: true
 };
 
-const tags = ngeotags(inputData, options);
-console.log(tags);
+event.tags = [...event.tags, ...ngeotags(inputData, options)];
+console.log(event);
 ```
 
 ## Development
