@@ -20,8 +20,13 @@ const generateTags = (input: InputData): Array<[string, string, string]> => {
 
     // Geohash
     if (input.lat && input.lon) {
-        const geohash = ngeohash.encode(input.lat, input.lon);
-        tags.push(['g', geohash, 'geohash']);
+        const fullGeohash = ngeohash.encode(input.lat, input.lon);
+        
+        // Generate geohashes of diminishing resolution
+        for (let i = fullGeohash.length; i > 0; i--) {
+            const partialGeohash = fullGeohash.substring(0, i);
+            tags.push(['g', partialGeohash, 'geohash']);
+        }
     }
 
     // ISO-3166-1 Alpha-2 (country code)
