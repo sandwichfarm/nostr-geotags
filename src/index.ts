@@ -27,14 +27,6 @@ interface Options {
     continentCode?: boolean,
 }
 
-// interface ISO31661Entry {
-//     alpha2: string;
-//     alpha3: string;
-//     numeric: string;
-//     name: string;
-// }
-
-
 type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
 
 const getUpdatedIso31663Value = (type: ISO31663FieldType, code: string): string => {
