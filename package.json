@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "test-ui": "vitest --ui --reporter=junit --coverage.reporter=json-summary --coverage.enabled=true",
+    "test-ui": "vitest --ui --coverage.enabled=true",
     "start": "node dist/app.js",
     "dev": "tsc-watch --onSuccess 'node dist/app.js'",
     "lint": "eslint . --ext .ts",
