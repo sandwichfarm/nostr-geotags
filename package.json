@@ -1,0 +1,27 @@
+{
+  "name": "nostr-geotags",
+  "version": "0.0.1",
+  "description": "Give an object of geodata, returns standardized nostr geotags ",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/sandwichfarm/nostr-geotags",
+  "author": "sandwich <dskvr@users.noreply.github.com> ",
+  "license": "MIT",
+  "dependencies": {
+    "iso-3166": "4.3.0",
+    "ngeohash": "0.6.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "start": "node dist/app.js",
+    "dev": "tsc-watch --onSuccess 'node dist/app.js'",
+    "lint": "eslint . --ext .ts"
+  },
+  "devDependencies": {
+    "@types/ngeohash": "0.6.8",
+    "vite-tsconfig-paths": "4.2.2",
+    "vitest": "1.0.4"
+  }
+}
