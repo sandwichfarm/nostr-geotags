@@ -8,6 +8,19 @@
   "repository": "https://github.com/sandwichfarm/nostr-geotags",
   "author": "sandwich <dskvr@users.noreply.github.com> ",
   "license": "MIT",
+  "keywords": [
+    "nostr", 
+    "nostr-event",
+    "nostr-tags",
+    "nostr-tag",
+    "geo", 
+    "geo-tag",
+    "iso-3166",
+    "iso-3166-1",
+    "iso-3166-2",
+    "iso-3166-3",
+    "transform"
+  ],
   "dependencies": {
     "iso-3166": "4.3.0",
     "ngeohash": "0.6.3"
