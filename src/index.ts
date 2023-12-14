@@ -73,8 +73,7 @@ const generateTags = (input: InputData, opts: Options): Array<[string, string, s
         const countryData = iso31661.find((c: ISO31661AssignedEntry) => c.alpha2 === input.countryCode);
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
-                // Make sure type is a valid key of ISO31661AssignedEntry
-                tags.push(['g', countryData[type as keyof ISO31661AssignedEntry], `countryCode:${type}`, `ISO-3166-1`]);
+                tags.push(['g', countryData[type as keyof ISO31661AssignedEntry], `countryCode`, `ISO-3166-1:${type}`]);
             });
         }
     }
@@ -86,7 +85,7 @@ const generateTags = (input: InputData, opts: Options): Array<[string, string, s
         if (regionData) {
             (['code', 'name', 'parent'] as const).forEach((type) => {
                 console.log(`Processing ${type}: ${regionData[type as keyof typeof regionData]}`); // Debugging statement
-                tags.push(['g', regionData[type as keyof typeof regionData], `regionCode:${type}`, `ISO-3166-2`]);
+                tags.push(['g', regionData[type as keyof typeof regionData], `regionCode`, `ISO-3166-2:${type}`]);
             });
         }
     }
@@ -100,7 +99,7 @@ const generateTags = (input: InputData, opts: Options): Array<[string, string, s
                 const value = countryData[type as keyof ISO31661Entry];
                 const updatedValue = getUpdatedIso31663Value(type, value);
                 console.log(`Processing ${type}: ${value} -> ${updatedValue}`); // Debugging statement
-                tags.push(['g', updatedValue, `countryCode:${type}`, `ISO-3166-3`]);
+                tags.push(['g', updatedValue, `countryCode`, `ISO-3166-3:${type}`]);
             });
         }
     }

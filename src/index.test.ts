@@ -33,10 +33,10 @@ describe('ngeotags', () => {
         it('should correctly transform ISO-3166-1 data', () => {
             const result = ngeotags({ countryCode: 'HU' }, { iso31661: true });
             console.log('result', result)
-            expect(result).toContainEqual(['g', 'HU', 'countryCode:alpha2', 'ISO-3166-1']);
-            expect(result).toContainEqual(['g', 'HUN', 'countryCode:alpha3', 'ISO-3166-1']);
-            expect(result).toContainEqual([ 'g', '348', 'countryCode:numeric', 'ISO-3166-1' ]);
-            expect(result).toContainEqual([ 'g', 'Hungary', 'countryCode:name', 'ISO-3166-1' ]);
+            expect(result).toContainEqual(['g', 'HU', 'countryCode', 'ISO-3166-1:alpha2']);
+            expect(result).toContainEqual(['g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3']);
+            expect(result).toContainEqual([ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ]);
+            expect(result).toContainEqual([ 'g', 'Hungary', 'countryCode', 'ISO-3166-1:name' ]);
         });
     })
 
@@ -47,9 +47,9 @@ describe('ngeotags', () => {
             console.log(result)
             const regionCodes = result.filter(tag => tag?.[3] && tag[3]?.includes('ISO-3166-2'));
             expect(regionCodes.length).toBe(3)
-            expect(result).toContainEqual([ 'g', 'HU-BU', 'regionCode:code', 'ISO-3166-2' ])
-            expect(result).toContainEqual([ 'g', 'Budapest', 'regionCode:name', 'ISO-3166-2' ])
-            expect(result).toContainEqual([ 'g', 'HU', 'regionCode:parent', 'ISO-3166-2' ])
+            expect(result).toContainEqual([ 'g', 'HU-BU', 'regionCode', 'ISO-3166-2:code' ])
+            expect(result).toContainEqual([ 'g', 'Budapest', 'regionCode', 'ISO-3166-2:name' ])
+            expect(result).toContainEqual([ 'g', 'HU', 'regionCode', 'ISO-3166-2:parent' ])
         });
     })
 
@@ -57,10 +57,10 @@ describe('ngeotags', () => {
         it('should correctly transform ISO-3166-3 changes', () => {
             const result = ngeotags({ countryCode: 'AI' }, { iso31663: true, iso31661: false }); // Assuming 'AN' has an ISO 3166-3 change
             // expect(result.length).toBe(4)
-            expect(result).toContainEqual([ 'g', 'DJ', 'countryCode:alpha2', 'ISO-3166-3' ]);
-            expect(result).toContainEqual( [ 'g', 'AIA', 'countryCode:alpha3', 'ISO-3166-3' ]);
-            expect(result).toContainEqual([ 'g', '660', 'countryCode:numeric', 'ISO-3166-3' ]);
-            expect(result).toContainEqual([ 'g', 'Anguilla', 'countryCode:name', 'ISO-3166-3' ]);
+            expect(result).toContainEqual([ 'g', 'DJ', 'countryCode', 'ISO-3166-3:alpha2' ]);
+            expect(result).toContainEqual( [ 'g', 'AIA', 'countryCode', 'ISO-3166-3:alpha3' ]);
+            expect(result).toContainEqual([ 'g', '660', 'countryCode', 'ISO-3166-3:numeric' ]);
+            expect(result).toContainEqual([ 'g', 'Anguilla', 'countryCode', 'ISO-3166-3:name' ]);
             // Add checks for other fields as needed
         });
 
@@ -68,10 +68,10 @@ describe('ngeotags', () => {
             const result = ngeotags({ countryCode: 'DE' }, { iso31663: true, iso31661: false }); // Assuming 'AN' has an ISO 3166-3 change
             console.log('no changes:', result)
             // expect(result.length).toBe(4)
-            expect(result).toContainEqual([ 'g', 'DE', 'countryCode:alpha2', 'ISO-3166-3' ])
-            expect(result).toContainEqual([ 'g', 'DEU', 'countryCode:alpha3', 'ISO-3166-3' ])
-            expect(result).toContainEqual([ 'g', '276', 'countryCode:numeric', 'ISO-3166-3' ])
-            expect(result).toContainEqual([ 'g', 'Germany', 'countryCode:name', 'ISO-3166-3' ])
+            expect(result).toContainEqual([ 'g', 'DE', 'countryCode', 'ISO-3166-3:alpha2' ])
+            expect(result).toContainEqual([ 'g', 'DEU', 'countryCode', 'ISO-3166-3:alpha3' ])
+            expect(result).toContainEqual([ 'g', '276', 'countryCode', 'ISO-3166-3:numeric' ])
+            expect(result).toContainEqual([ 'g', 'Germany', 'countryCode', 'ISO-3166-3:name' ])
         });
     })
 
