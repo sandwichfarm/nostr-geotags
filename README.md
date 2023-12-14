@@ -136,6 +136,3 @@ To run tests:
 ```
 npm test
 ```
-
-## Credits
-This package was developed by [Your Name] with assistance from your helper monkey.
