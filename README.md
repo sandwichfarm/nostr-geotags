@@ -57,19 +57,59 @@ The `inputData` object can contain the following properties, used to generate ge
 - Other properties (any): You can include additional key-value pairs as needed.
 
 ## Options Reference
-The `options` object specifies which types of tags to generate. Each option defaults to `false` unless specified:
+The `options` object specifies which types of tags to generate. 
 
-- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `false`.
-- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
-- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`.
-- `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
-- `geohash` (boolean): Generate a Geohash code based on latitude and longitude. Default: `false`.
-- `gps` (boolean): Include latitude and longitude as a 'gps' tag. Default: `false`.
-- `city` (boolean): Include a tag for the city. Default: `false`.
-- `country` (boolean): Include a tag for the country. Default: `false`.
-- `region` (boolean): Include a tag for the region. Default: `false`.
+- `gps` (boolean): Include latitude and longitude as a 'gps' tag. Default: `true`.
+- `geohash` (boolean): Generate a Geohash code based on latitude and longitude. Default: `true`.
+- `city` (boolean): Include a tag for the city. Default: `true`.
+- `country` (boolean): Include a tag for the country. Default: `true`.
+- `region` (boolean): Include a tag for the region. Default:`true`.
 - `continent` (boolean): Include a tag for the continent. Default: `false`.
-- `continentCode` (boolean): Include a tag for the continent code. Default: `false`.
+- `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
+- `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
+- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `false`.
+- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `true`.
+- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`.
+
+## Response Reference
+The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is as follows:
+
+- The first element (`'g'`) is a constant indicating the type of tag.
+- The second element is the value of the tag, which can vary based on the input and options used.
+- The third element is the category of the tag.
+- The fourth element (optional) provides additional information or context about the tag.
+
+### Tag Types and Their Descriptions
+1. **GPS**: `[ 'g', '<latitude,longitude>', 'gps' ]`
+   - This is a passthrough from the input latitude and longitude. It represents the GPS coordinates.
+   
+2. **Geohash**: `[ 'g', '<geohash>', 'geohash' ]`
+   - Geohashes of varying lengths derived from the input latitude and longitude. These are not passthrough; they are computed using the `ngeohash` library.
+
+3. **ISO-3166-1 Codes**: 
+   - These tags represent country information derived from the `iso-3166` library and are based on the provided country code. They are not passthrough.
+   - Examples: 
+     - Alpha-2 code: `[ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ]`
+     - Alpha-3 code: `[ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ]`
+     - Numeric code: `[ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ]`
+     - Country name: `[ 'g', 'Hungary', 'countryCode', 'ISO-3166-1:name' ]`
+
+4. **ISO-3166-3 Codes**: 
+   - These tags also represent country information, but focus on historical changes in country codes. They are not passthrough.
+   - Examples mirror the ISO-3166-1 format but relate to updated country codes.
+
+5. **City**: `[ 'g', 'Budapest', 'city' ]`
+   - A passthrough from the input city name.
+
+6. **Continent**: `[ 'g', 'Europe', 'continent' ]`
+   - A passthrough from the input continent name.
+
+7. **Continent Code**: `[ 'g', 'EU', 'continentCode' ]`
+   - A passthrough from the input continent code.
+
+8. **Planet**: `[ 'g', 'Earth', 'planet' ]`
+   - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
+
 
 ## Example Response
 
