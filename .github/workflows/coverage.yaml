@@ -12,6 +12,8 @@ jobs:
         run: yarn install
       - name: Test and Coverage
         run: yarn coverage
+      - name: Move Coverage File 
+        run: cp coverage/coverage-final.json coverage/coverage-summary.json 
       - name: Update Coverage Badge
         # GitHub actions: default branch variable
         # https://stackoverflow.com/questions/64781462/github-actions-default-branch-variable
