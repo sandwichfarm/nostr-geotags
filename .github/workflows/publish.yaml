@@ -1,0 +1,45 @@
+name: Publish to NPM and Create GitHub Release
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14' # Use a Node.js version that supports ES Modules
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Tests
+        run: yarn test
+
+      - name: Build Package
+        run: yarn build
+
+      - name: Publish to npm
+        id: npm_publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.npm_publish.outputs.type != 'none' && steps.npm_publish.outputs.dry_run != true
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.npm_publish.outputs.version }}
+          release_name: Release v${{ steps.npm_publish.outputs.version }}
+          body: 'New release v${{ steps.npm_publish.outputs.version }}'
+          draft: false
+          prerelease: false
