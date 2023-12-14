@@ -18,7 +18,7 @@
     "start": "node dist/app.js",
     "dev": "tsc-watch --onSuccess 'node dist/app.js'",
     "lint": "eslint . --ext .ts",
-    "coverage": "vitest run --coverage --reporter=json --coverage.enabled=true"
+    "coverage": "vitest run --coverage.reporter=json --coverage.enabled=true"
   },
   "devDependencies": {
     "@types/ngeohash": "0.6.8",
