@@ -60,6 +60,8 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
     // GPS
     if (opts.gps && input.lat && input.lon) {
+        tags.push(['g', `${input.lat}, ${input.lon}`, 'dd', 'de facto']);
+        
         const maxResolution = 10;
         const truncateToResolution = (num: number, resolution: number): number => {
             const multiplier = Math.pow(10, resolution);

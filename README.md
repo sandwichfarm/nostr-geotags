@@ -83,14 +83,14 @@ The function returns an array of tuples, where each tuple represents a tag and i
 - The fourth element (optional) is the `standard`, which is serialized with a `:` where when split `standard[0]` is the the standard's identified and `standard[1]` is the standard's value. This field is only used for ISO.
 
 ### Determining tag usage
-Which tags you use depend on use-case. If your concerns are namely geospacial, using geotags by themselves will likely suffice, if your concerns around around borders, languages or laws, `ISO-3166-3` may suffice. If your concerns are mixed, a combination of standards will suffice. In most cases the defaults are good, and most likely won't need to be changed unless you are optimizing your tags array. 
+Which tags you use depend on use-case. If your concerns are namely geospacial, using only geohashes likely suffice, if your concerns around around borders, languages or laws, `ISO-3166-3` may suffice. If your concerns are mixed, a combination of standards will suffice. In most cases the defaults are good, and most likely won't need to be changed unless you are optimizing your tags array. 
 
 ### Tag Types and Their Descriptions
-1. **GPS**: `[ 'g', '<latitude,longitude>', 'gps' ]`
-   - This is a passthrough from the input latitude and longitude. It represents the GPS coordinates.
+1. **GPS**: `[ 'g', '<latitude>', 'lat' ]` and `[ 'g', '<latitude>', 'lon' ]`
+   - Coordinates of diminishing resolution from the input latitude and longitude. One of each of these tags are passthrough, but the rest are progressively reduced in their precision until the final decimal point. If an integer is provided for one or both `lat` and `lon`, an integer is returned. 
    
 2. **Geohash**: `[ 'g', '<geohash>', 'geohash' ]`
-   - Geohashes of varying lengths derived from the input latitude and longitude. These are not passthrough; they are computed using the `ngeohash` library.
+   - Geohashes of diminishing resolution from the input latitude and longitude. These are not passthrough; they are computed using the `ngeohash` library.
 
 3. **ISO-3166-1 Codes**: 
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.

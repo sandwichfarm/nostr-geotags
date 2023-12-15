@@ -104,7 +104,7 @@ describe('ngeotags', () => {
 
         const result = ngeotags(input, options);
         // console.log(result)
-        expect(result).toHaveLength(27);
+        expect(result).toHaveLength(28);
     });
 
     it('should generate tags correctly with default options', () => {
