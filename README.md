@@ -1,4 +1,4 @@
-# nostr-geotags <small>`v0.0.6`</small>
+# nostr-geotags <small>`v0.0.7`</small>
 
 [![publish](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml) [![cov](https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg)](https://github.com/sandwichfarm/nostr-geotags/actions)
 
@@ -62,7 +62,20 @@ The `inputData` object can contain the following properties, used to generate ge
 ## Options Reference
 The `options` object specifies which types of tags to generate. 
 
-- `gps` (boolean): Include latitude and longitude as a 'gps' tag. Default: `true`.
+
+# ISO options
+- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `true`.
+- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
+- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`. See `applyChanges` 
+
+# Transform options
+- `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
+- `applyChanges` (boolean): Apply ISO 3166-3 changes, overwriting ISO 3166-1. If false, ISO 3166-3 changes will be appended when they exist. Only applies when `iso31663===true`. Default `false` 
+
+# Response Options
+Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
+
+- `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
 - `geohash` (boolean): Generate a Geohash code based on latitude and longitude. Default: `true`.
 - `city` (boolean): Include a tag for the city. Default: `true`.
 - `country` (boolean): Include a tag for the country. Default: `true`.
@@ -70,9 +83,6 @@ The `options` object specifies which types of tags to generate.
 - `continent` (boolean): Include a tag for the continent. Default: `false`.
 - `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
 - `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
-- `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `false`.
-- `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `true`.
-- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `true`.
 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
@@ -187,7 +197,7 @@ event = {}
 event.kind = 1
 //created_at, content etc...
 event.tags = []
-evennt.tags.push(['t', 'nostrworks'])
+event.tags.push(['t', 'nostrworks'])
 
 const inputData = {
   lat: 52.5200,

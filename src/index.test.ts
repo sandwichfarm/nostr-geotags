@@ -282,7 +282,7 @@ describe('ngeotags', () => {
 
     it('should handle ISO-3166-3 correctly', () => {
         const input: InputData = {
-            iso31663: true,
+            // iso31663: true,
             countryCode: 'AI' // Assuming 'AN' has an ISO-3166-3 change
         };
 
@@ -298,7 +298,7 @@ describe('ngeotags', () => {
     });
 
     it('should return original value if not inncluded in ISO-3166-3 changes', () => {
-        const result = ngeotags({ countryCode: 'DE' }, { iso31663: true, iso31661: false }); // Assuming 'AN' has an ISO 3166-3 change
+        const result = ngeotags({ countryCode: 'DE' }, { iso31663: true, iso31661: true }); // Assuming 'AN' has an ISO 3166-3 change
         console.log('no changes:', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'g', 'DE', 'countryCode', 'ISO-3166-3:alpha2' ],

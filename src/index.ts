@@ -38,18 +38,13 @@ const getUpdatedIso31663Values = (type: ISO31663FieldType, code: string): string
         entry.from[type] === code ||
         entry.to.some(change => change[type] === code)
     );
-
     if (matchedEntry) {
         if (matchedEntry.from[type] === code) {
-            // Return all new values from the 'to' part
             return matchedEntry.to.map(change => change[type]);
         } else {
-            // If the code matches the 'to' part, return the same code as it's already the new value
             return [code];
         }
     }
-
-    // If there's no match, return the original code in an array
     return [code];
 };
 
@@ -83,8 +78,6 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
     // Geohash
     if (opts.geohash && input.lat && input.lon) {
         const fullGeohash = ngeohash.encode(input.lat, input.lon);
-        
-        // Generate geohashes of diminishing resolution
         for (let i = fullGeohash.length; i > 0; i--) {
             const partialGeohash = fullGeohash.substring(0, i);
             tags.push(['g', partialGeohash, 'geohash']);
@@ -121,22 +114,22 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
     // ISO-3166-3 (changes)
     if (opts.iso31663 && input.countryCode) {
-        //log("ISO-3166-3 processing started"); // Debugging statement
+        //log("ISO-3166-3 processing started");
         const countryData = iso31661.find((c: ISO31661Entry) => c.alpha2 === input.countryCode);
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
+                // const originalValues = countryData[type as keyof ISO31661Entry]
                 const updatedValues = getUpdatedIso31663Values(type, countryData[type as keyof ISO31661Entry]);
-                updatedValues.forEach(updatedValue => {
+                updatedValues.forEach((updatedValue, index) => {
+                    // if(originalValues === updatedValue) return 
                     const key = type === 'name' ? `country` : `countryCode`;
                     const standard = `ISO-3166-3:${type}`;
-                    //log(`Processing ${type}: ${updatedValue}`); // Debugging statement
                     tags.push(['g', updatedValue, key, standard]);
+                    //log(`Processing ${type}: ${updatedValue}`);
                 });
             });
         }
     }
-
-
 
     // City
     if (opts.city && input.city) {
@@ -153,7 +146,7 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
         tags.push(['g', input.continentCode, 'continentCode']);
     }
 
-    // Planet - Assuming Earth as there's no specific data for planet
+    // Planet
     if(opts.planet || input?.planet) {
         tags.push(['g', input?.planet? input.planet: 'Earth', 'planet']);
     }
@@ -163,15 +156,11 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
 const dedupe = (tags: Tag[], applyChanges: boolean): Tag[] => {
     let deduped: Tag[] = [];
-
-    // Helper function to check if a tag already exists in the deduplicated array
     const isDuplicate = (tag: Tag, array: Tag[]): boolean => {
         // Allow all 'lat', 'lon', and 'geohash' tags
         if (['lat', 'lon', 'geohash'].includes(tag[2])) {
             return false;
         }
-
-        // Check for duplicates only for ISO-3166 and other tags
         return array.some(
             item => item[2] === tag[2] && item.length === 4 && tag.length === 4 && item[3] === tag[3]
         );
@@ -182,7 +171,6 @@ const dedupe = (tags: Tag[], applyChanges: boolean): Tag[] => {
         if (tag.length === 4 && tag[3].startsWith('ISO-3166-3')) {
             deduped.push(tag);
         } else if (!isDuplicate(tag, deduped)) {
-            // Add non-duplicate tags
             deduped.push(tag);
         }
     });
@@ -207,6 +195,7 @@ const dedupe = (tags: Tag[], applyChanges: boolean): Tag[] => {
     });
     return deduped;
 };
+
 // export function logger(...args){
 //     if( this.debug === true ) 
 //         console.//log(...args);
@@ -218,7 +207,7 @@ export default (input: InputData | null, opts?: Options): Array<[string, string,
     if (!(input instanceof Object) || Array.isArray(input) || typeof input!== 'object' || typeof input=== 'function' )
         throw new Error('Input must be an object');
     opts = {
-        applyChanges: true,
+        applyChanges: false,
         dedupe: true,
         iso31661: true,
         iso31662: false, 
