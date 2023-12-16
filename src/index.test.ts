@@ -1,11 +1,11 @@
 
 
 import { describe, it, expect, vi} from 'vitest';
-import ngeotags, { InputData, Options, Tag, dedupe, generateCountryTagKey } from './index'; // Adjust the import path as needed
+import ngeotags, { InputData, Options, GeoTag, dedupe, generateCountryTagKey } from './index'; // Adjust the import path as needed
 
 
 
-// let ngeotags: (input: InputData, options?: Options) => Tag[];
+// let ngeotags: (input: InputData, options?: Options) => GeoTag[];
 
 describe('ngeotags', () => {
     // it('should output //console.log when debug is true', () => {

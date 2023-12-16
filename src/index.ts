@@ -32,11 +32,11 @@ export interface Options {
 export type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
 
 /**
- * Represents a Tag used in the geotagging system.
+ * Represents a nostr event `g` (geo) tag with a length of 3 or 4
  * 
- * @typedef {Array} Tag
+ * @typedef {Array} GeoTag
  * 
- * A Tag is an array with either three or four elements, structured as follows:
+ * A GeoTag is an array with either three or four elements, structured as follows:
  * - First element (string): See NIP-01, always 'g' in this package. 
  * - Second element (string): The value of the tag, such as a country code or name.
  * - Third element (string): The key of the tag, indicating the type of data, like 'countryCode'.
@@ -44,7 +44,7 @@ export type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
  * 
  * The presence of the fourth element indicates that the tag has a defined standard or is otherwise an industry standard signified with 'de facto'
  */
-export type Tag = [string, string, string] | [string, string, string, string];
+export type GeoTag = [string, string, string] | [string, string, string, string];
 
 
 /**
@@ -78,15 +78,15 @@ const getUpdatedIso31663Values = (type: ISO31663FieldType, code: string): string
  *
  * @param {InputData} input - The geo input data used to generate tags.
  * @param {Options} opts - Options to customize tag generation and control the output.
- * @returns {Tag[]} An array of generated geo tags.
+ * @returns {GeoTag[]} An array of generated geo tags.
  *
  * This function processes the input data and generates a series of tags based on the options.
  * It handles various types of data such as GPS coordinates, ISO-3166 country and region codes,
  * city, continent, and planet names. The generated tags are deduplicated by default, can be changed
  * with dedupe option. 
  */
-const generateTags = (input: InputData, opts: Options): Tag[] => {
-    const tags: Tag[] = [];
+const generateTags = (input: InputData, opts: Options): GeoTag[] => {
+    const tags: GeoTag[] = [];
 
     // const log = logger.bind(opts)
 
@@ -194,17 +194,17 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 /**
  * Deduplicates an array of tags.
  *
- * @param {Tag[]} tags - The array of tags to deduplicate.
- * @returns {Tag[]} A deduplicated array of tags.
+ * @param {GeoTag[]} tags - The array of tags to deduplicate.
+ * @returns {GeoTag[]} A deduplicated array of tags.
  *
  * This function removes duplicate tags from the provided array. It checks each tag for duplication
  * against the existing tags in the deduped array. It also filters out certain tags based on specific
  * criteria, such as prioritizing ISO-3166-3 tags over ISO-3166-1 and ISO-3166-2 tags.
  */
-export const dedupe = (tags: Tag[]): Tag[] => {
-    let deduped: Tag[] = [];
+export const dedupe = (tags: GeoTag[]): GeoTag[] => {
+    let deduped: GeoTag[] = [];
 
-    const isDuplicate = (tag: Tag, arr: Tag[]) => arr.some(item => item[1] === tag[1] && item[2] === tag[2]);
+    const isDuplicate = (tag: GeoTag, arr: GeoTag[]) => arr.some(item => item[1] === tag[1] && item[2] === tag[2]);
 
     tags = filterNonStringTags(tags)
 
@@ -263,14 +263,14 @@ export const generateRegionTagKey = (type: string): string => {
 /**
  * Sorts an array of tags by the key (second item in each tag array).
  * 
- * @param {Tag[]} tags - The array of tags to be sorted.
- * @returns {Tag[]} The sorted array of tags.
+ * @param {GeoTag[]} tags - The array of tags to be sorted.
+ * @returns {GeoTag[]} The sorted array of tags.
  * 
  * This function sorts the tags based on the tag key (third element), 
  * which allows for easier processing and organization of tags.
  */
-const sortTagsByKey = (tags: Tag[]): Tag[] => {
-    return tags.sort((a: Tag, b: Tag) => {
+const sortTagsByKey = (tags: GeoTag[]): GeoTag[] => {
+    return tags.sort((a: GeoTag, b: GeoTag) => {
         if (a[2] < b[2]) return -1;
         if (a[2] > b[2]) return 1;
         return 0;
@@ -280,10 +280,10 @@ const sortTagsByKey = (tags: Tag[]): Tag[] => {
 
 /**
  * Filters out tags that contain non-string items.
- * @param {Tag[]} tags - An array of tags, where each tag is an array.
- * @returns {Tag[]} Filtered array of tags.
+ * @param {GeoTag[]} tags - An array of tags, where each tag is an array.
+ * @returns {GeoTag[]} Filtered array of tags.
  */
-function filterNonStringTags(tags: Tag[]): Tag[] {
+function filterNonStringTags(tags: GeoTag[]): GeoTag[] {
     return tags.filter(tag => tag.every(item => typeof item === 'string'));
 }
 
