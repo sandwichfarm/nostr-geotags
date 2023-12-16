@@ -4,7 +4,7 @@
 
 
 ## Summary
-`nostr-geotags` is a modern ESM-only package for generating nostr geo tags (`['g', ...]`) based on various inputs like latitude, longitude, city, country, etc. It uses `iso-3166` and `ngeohash` to generate geodata.  This package is alpha and the API _will_ change.
+`nostr-geotags` is a modern ESM-only package for generating nostr geo tags (`['g', ...]`) based on various inputs like latitude, longitude, city, country, etc. It uses `iso-3166` and `ngeohash` to generate geodata.  This package is alpha and the API and response formats _will_ change.
 
 ## Rationale
 While `NIP-32` labels can be used for geotagging events, it's cumbersome in the filter-case, and problematic for both Parameterized Replaceable Events and Replaceable Events. This format is the result of a conversation from [here](https://github.com/nostr-protocol/nips/pull/763#issuecomment-1710386631)
@@ -199,8 +199,7 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'Hungary', 'country', 'ISO-3166-3:name' ],
   [ 'g', 'Budapest', 'city' ],
   [ 'g', 'Europe', 'continent' ],
-  [ 'g', 'EU', 'continentCode' ],
-  [ 'g', 'Earth', 'planet' ]
+  [ 'g', 'EU', 'continentCode' ]
 ]
 ```
 
