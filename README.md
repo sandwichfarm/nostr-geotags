@@ -6,6 +6,8 @@
 ## Summary
 `nostr-geotags` is a modern ESM-only package for generating nostr geo tags (`['g', ...]`) based on various inputs like latitude, longitude, city, country, etc. It uses `iso-3166` and `ngeohash` to generate geodata.  This package is alpha and the API and response formats _will_ change.
 
+This package was derived from needs in `[@nostrwatch](https://github.com/sandwichfarm/nostr-watch)`, an _OpenSats Grant Recipient_, and so was made possible by [OpenSats](https://opensats.org/).
+
 ## Rationale
 While `NIP-32` labels can be used for geotagging events, it's cumbersome in the filter-case, and problematic for both Parameterized Replaceable Events and Replaceable Events. This format is the result of a conversation from [here](https://github.com/nostr-protocol/nips/pull/763#issuecomment-1710386631)
 
@@ -63,15 +65,15 @@ The `inputData` object can contain the following properties, used to generate ge
 The `options` object specifies which types of tags to generate. 
 
 
-# ISO options
+### ISO options
 - `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `true`.
 - `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
 - `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`. See `ISO-3166-3 Behaviors`  
 
-# Transform options
+### Transform options
 - `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
 
-# Response Options
+### Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
 
 - `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
@@ -83,21 +85,6 @@ Please note: that these will only have an effect on the output if the input for 
 - `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
 - `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
 
-## ISO-3166-3 Behaviors
-
-When `iso31663` is enabled, any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counter-part, will be appended to the tags array. Here's an example:
-
-```
-[
-  [ 'g', 'AI', 'countryCode', 'ISO-3166-1:alpha2' ],
-  [ 'g', 'DJ', 'countryCode', 'ISO-3166-3:alpha2' ],
-  [ 'g', 'AIA', 'countryCode', 'ISO-3166-1:alpha3' ],
-  [ 'g', '660', 'countryCode', 'ISO-3166-1:numeric' ],
-  [ 'g', 'Anguilla', 'countryName', 'ISO-3166-1:name' ]
-]
-```
-
-Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the changed `ISO-3166-3` code. Since the other `ISO-3166-3` properties for `AI` are the same as their `ISO-3166-1` counter-parts, they are not included. 
 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
@@ -144,6 +131,21 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 9. **Planet**: `[ 'g', 'Earth', 'planet' ]`
    - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
 
+### ISO-3166-3 Behaviors
+
+When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counterpart, will be appended to the tags array. Here's an example:
+
+```
+[
+  [ 'g', 'AI', 'countryCode', 'ISO-3166-1:alpha2' ],
+  [ 'g', 'DJ', 'countryCode', 'ISO-3166-3:alpha2' ],
+  [ 'g', 'AIA', 'countryCode', 'ISO-3166-1:alpha3' ],
+  [ 'g', '660', 'countryCode', 'ISO-3166-1:numeric' ],
+  [ 'g', 'Anguilla', 'countryName', 'ISO-3166-1:name' ]
+]
+```
+
+Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the changed `ISO-3166-3` code. Since the other `ISO-3166-3` properties for `AI` are the same as their `ISO-3166-1` counter-parts, they are not included. 
 
 
 ## Example Response

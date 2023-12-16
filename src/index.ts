@@ -199,19 +199,19 @@ const generateTags = (input: InputData, opts: Options): GeoTag[] => {
     }
 
     if(!opts.country && opts.countryCode !== true){
-        tags = tags.filter(tag => tag[2]!== 'countryCode');
+        tags = filterOutType(tags, 'countrycode')
     }
 
     if(!opts.country && opts.countryName !== true){
-        tags = tags.filter(tag => tag[2]!== 'countryName');
+        tags = filterOutType(tags, 'countryName');
     }
 
     if(!opts.region && opts.regionCode !== true){
-        tags = tags.filter(tag => tag[2]!== 'regionCode');
+        tags = filterOutType(tags, 'regionCode');
     }
 
     if(!opts.region && opts.regionName !== true){
-        tags = tags.filter(tag => tag[2]!== 'regionName');
+        tags = filterOutType(tags, 'regionName');
     }
 
     let result 
@@ -287,6 +287,11 @@ export const generateCountryTagKey = (type: string): string => {
 export const generateRegionTagKey = (type: string): string => {
     return type === 'name'? `regionName`: type === 'parent'? `countryCode`: `regionCode`;
 };
+
+
+export const filterOutType = (tags: GeoTag[], type: string): GeoTag[] => {
+    return tags.filter(tag => tag[2]!== type);
+}
 
 
 /**
