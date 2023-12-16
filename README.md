@@ -80,7 +80,7 @@ The `options` object specifies which types of tags to generate.
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
 
 - `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
-- `geohash` (boolean): Generate a Geohash code based on latitude and longitude. Default: `true`.
+- `geohash` (boolean): Includes geohash codes from `ngeohash`, with diminishing resolution, based on latitude and longitude. Default: `true`.
 - `city` (boolean): Include a tag for the city. Default: `true`.
 - `country` (boolean): Include a tag for the country. Default: `true`.
 - `region` (boolean): Include a tag for the region. Default:`true`.
