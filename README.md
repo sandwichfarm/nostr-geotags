@@ -151,6 +151,36 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `continentCode`, `continent` **and** `planet` are provided.
 ```
 [
+  [ 'g', 'EU', 'continentCode' ],
+  [ 'g', 'Europe', 'continentName' ],
+  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
+  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
+  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
+  [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
+  [ 'g', 'u2mwdd8q4', 'geohash' ],
+  [ 'g', 'u2mwdd8q', 'geohash' ],
+  [ 'g', 'u2mwdd8', 'geohash' ],
+  [ 'g', 'u2mwdd', 'geohash' ],
+  [ 'g', 'u2mwd', 'geohash' ],
+  [ 'g', 'u2mw', 'geohash' ],
+  [ 'g', 'u2m', 'geohash' ],
+  [ 'g', 'u2', 'geohash' ],
+  [ 'g', 'u', 'geohash' ]
+]
+```
+
+This is a response with all options enabled (deduped, `dedupe: true`)
+
+```
+[
+  [ 'g', 'Budapest', 'cityName' ],
+  [ 'g', 'EU', 'continentCode' ],
+  [ 'g', 'Europe', 'continentName' ],
+  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
+  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
+  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
+  [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
+  [ 'g', '47.5636, 19.0947', 'dd', 'de facto' ],
   [ 'g', 'u2mwdd8q4', 'geohash' ],
   [ 'g', 'u2mwdd8q', 'geohash' ],
   [ 'g', 'u2mwdd8', 'geohash' ],
@@ -160,20 +190,6 @@ Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `co
   [ 'g', 'u2m', 'geohash' ],
   [ 'g', 'u2', 'geohash' ],
   [ 'g', 'u', 'geohash' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-  [ 'g', 'Hungary', 'country', 'ISO-3166-1:name' ],
-  [ 'g', 'Budapest', 'city' ],
-  [ 'g', 'EU', 'continentCode' ],
-  [ 'g', 'Earth', 'planet' ]
-]
-```
-
-This is a response with all options enabled (deduped, `dedupe: true`)
-
-```
-[
   [ 'g', '47.5636', 'lat' ],
   [ 'g', '47.563', 'lat' ],
   [ 'g', '47.56', 'lat' ],
@@ -182,24 +198,9 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', '19.094', 'lon' ],
   [ 'g', '19.09', 'lon' ],
   [ 'g', '19', 'lon' ],
-  [ 'g', 'u2mwdd8q4', 'geohash' ],
-  [ 'g', 'u2mwdd8q', 'geohash' ],
-  [ 'g', 'u2mwdd8', 'geohash' ],
-  [ 'g', 'u2mwdd', 'geohash' ],
-  [ 'g', 'u2mwd', 'geohash' ],
-  [ 'g', 'u2mw', 'geohash' ],
-  [ 'g', 'u2m', 'geohash' ],
-  [ 'g', 'u2', 'geohash' ],
-  [ 'g', 'u', 'geohash' ],
+  [ 'g', 'Earth', 'planetName' ],
   [ 'g', 'HU-BU', 'regionCode', 'ISO-3166-2:code' ],
-  [ 'g', 'Budapest', 'region', 'ISO-3166-2:name' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-3:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-3:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-3:numeric' ],
-  [ 'g', 'Hungary', 'country', 'ISO-3166-3:name' ],
-  [ 'g', 'Budapest', 'city' ],
-  [ 'g', 'Europe', 'continent' ],
-  [ 'g', 'EU', 'continentCode' ]
+  [ 'g', 'Budapest', 'regionName', 'ISO-3166-2:name' ]
 ]
 ```
 

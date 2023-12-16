@@ -4,29 +4,39 @@ import { iso31661, iso31662, iso31663, ISO31661AssignedEntry, ISO31662Entry, ISO
 export interface InputData {
     lat?: number;
     lon?: number;
-    city?: string;
-    country?: string;
+    cityName?: string;
+    countryName?: string;
     regionName?: string;
     countryCode?: string;
-    continent?: string;
+    continentName?: string;
     continentCode?: string;
+    planetName?: string;
     [key: string]: any;
 }
 
 export interface Options {
     dedupe: boolean;
+    sort: boolean;
+
     iso31661?: boolean,
     iso31662?: boolean, 
     iso31663?: boolean, 
-    planet?: boolean,
+
     geohash?: boolean,
     gps?: boolean,
     city?: boolean,
+    cityName?: boolean | null,
     country?: boolean,
+    countryName?: boolean | null,
+    countryCode?: boolean | null,
     region?: boolean,
+    regionName?: boolean | null,
+    regionCode?: boolean | null,
     continent?: boolean,
-    continentCode?: boolean,
-    debug: boolean
+    continentName?: boolean | null,
+    continentCode?: boolean | null,
+    planet?: boolean,
+    planetName?: boolean | null,
 }
 
 export type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
@@ -82,11 +92,11 @@ const getUpdatedIso31663Values = (type: ISO31663FieldType, code: string): string
  *
  * This function processes the input data and generates a series of tags based on the options.
  * It handles various types of data such as GPS coordinates, ISO-3166 country and region codes,
- * city, continent, and planet names. The generated tags are deduplicated by default, can be changed
+ * city, continent, and continentName: names. The generated tags are deduplicated by default, can be changed
  * with dedupe option. 
  */
 const generateTags = (input: InputData, opts: Options): GeoTag[] => {
-    const tags: GeoTag[] = [];
+    let tags: GeoTag[] = [];
 
     // const log = logger.bind(opts)
 
@@ -169,26 +179,45 @@ const generateTags = (input: InputData, opts: Options): GeoTag[] => {
     }
 
     // City
-    if (opts.city && input.city) {
-        tags.push(['g', input.city, 'cityName']);
+    if ((opts.city || opts.cityName) && input.cityName) {
+        tags.push(['g', input.cityName, 'cityName']);
     }
 
     // Continent
-    if (opts.continent && input.continent) {
-        tags.push(['g', input.continent, 'continentName']);
+    if ((opts.continent || opts.continentName) && input.continentName) {
+        tags.push(['g', input.continentName, 'continentName']);
     }
 
     // Continent Code
-    if (opts.continentCode && input.continentCode) {
+    if ((opts.continent || opts.continentCode) && input.continentCode) {
         tags.push(['g', input.continentCode, 'continentCode']);
     }
 
     // Planet
-    if(opts.planet || input?.planet) {
-        tags.push(['g', input?.planet? input.planet: 'Earth', 'planetName']);
+    if(opts.planet || opts.planetName === true) {
+        tags.push(['g', input?.planetName? input.planetName: 'Earth', 'planetName']);
     }
 
-    return opts?.dedupe === true? dedupe(tags): tags;
+    if(!opts.country && opts.countryCode !== true){
+        tags = tags.filter(tag => tag[2]!== 'countryCode');
+    }
+
+    if(!opts.country && opts.countryName !== true){
+        tags = tags.filter(tag => tag[2]!== 'countryName');
+    }
+
+    if(!opts.region && opts.regionCode !== true){
+        tags = tags.filter(tag => tag[2]!== 'regionCode');
+    }
+
+    if(!opts.region && opts.regionName !== true){
+        tags = tags.filter(tag => tag[2]!== 'regionName');
+    }
+
+    let result 
+    result = opts?.dedupe === true? dedupe(tags): tags;
+    result = opts?.sort === true? sortTagsByKey(result): result;
+    return result
 };
 
 /**
@@ -227,7 +256,7 @@ export const dedupe = (tags: GeoTag[]): GeoTag[] => {
             deduped = deduped.filter(tag => !(tag[2] === category && tag[3] && tag[3].startsWith('ISO-3166-2')));
         }
     });
-    return sortTagsByKey(deduped);
+    return deduped
 };
 
 /**
@@ -269,7 +298,7 @@ export const generateRegionTagKey = (type: string): string => {
  * This function sorts the tags based on the tag key (third element), 
  * which allows for easier processing and organization of tags.
  */
-const sortTagsByKey = (tags: GeoTag[]): GeoTag[] => {
+export const sortTagsByKey = (tags: GeoTag[]): GeoTag[] => {
     return tags.sort((a: GeoTag, b: GeoTag) => {
         if (a[2] < b[2]) return -1;
         if (a[2] > b[2]) return 1;
@@ -294,18 +323,32 @@ export default (input: InputData | null, opts?: Options): Array<[string, string,
         throw new Error('Input must be an object');
     opts = {
         dedupe: true,
+        sort: false,
+
         iso31661: true,
         iso31662: false, 
         iso31663: false, 
-        planet: false,
         geohash: true,
+
         gps: false,
+
         city: true,
+        cityName: null,
+
         country: true,
+        countryName: null,
+        countryCode: null,
+
         region: true,
+        regionName: null,
+        regionCode: null,
+
         continent: true,
-        continentCode: true,
-        debug: false,
+        continentName: null, 
+        continentCode: null,
+
+        planet: false,
+        planetName: null,
         ...opts
     };
 
