@@ -14,7 +14,6 @@ export interface InputData {
 }
 
 export interface Options {
-    applyChanges: boolean,
     dedupe: boolean;
     iso31661?: boolean,
     iso31662?: boolean, 
@@ -89,7 +88,7 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
         const countryData = iso31661.find((c: ISO31661AssignedEntry) => c.alpha2 === input.countryCode);
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
-                const key = type === 'name'? `country`: `countryCode`;
+                const key = generateTagKey(type);
                 const value = countryData[type as keyof ISO31661AssignedEntry];
                 const standard = `ISO-3166-1:${type}`
                 tags.push(['g', value, key, standard]);
@@ -103,7 +102,7 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
         const regionData = iso31662.find(r => r.parent === input.countryCode && r.name === input.regionName);
         if (regionData) {
             (['code', 'name', 'parent'] as const).forEach((type) => {
-                const key = type === 'name'? `region`: type === 'parent'? `countryCode`: `regionCode`;
+                const key = type === 'name'? `regionName`: type === 'parent'? `countryCode`: `regionCode`;
                 const value = regionData[type as keyof typeof regionData];
                 const standard = `ISO-3166-2:${type}`
                 //log(`Processing ${type}: ${value}`); // Debugging statement
@@ -114,18 +113,20 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
     // ISO-3166-3 (changes)
     if (opts.iso31663 && input.countryCode) {
-        //log("ISO-3166-3 processing started");
         const countryData = iso31661.find((c: ISO31661Entry) => c.alpha2 === input.countryCode);
         if (countryData) {
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach((type) => {
-                // const originalValues = countryData[type as keyof ISO31661Entry]
-                const updatedValues = getUpdatedIso31663Values(type, countryData[type as keyof ISO31661Entry]);
-                updatedValues.forEach((updatedValue, index) => {
-                    // if(originalValues === updatedValue) return 
-                    const key = type === 'name' ? `country` : `countryCode`;
+                const originalValue = countryData[type as keyof ISO31661Entry]
+                const updatedValues = getUpdatedIso31663Values(type, originalValue);
+
+                // Only add ISO-3166-3 tags if different (when applyChanges is true)
+                updatedValues.forEach((updatedValue) => {
+                    if (originalValue === updatedValue) {
+                        return; // Skip adding the tag if values are the same
+                    }
+                    const key = generateTagKey(type)
                     const standard = `ISO-3166-3:${type}`;
                     tags.push(['g', updatedValue, key, standard]);
-                    //log(`Processing ${type}: ${updatedValue}`);
                 });
             });
         }
@@ -133,12 +134,12 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
     // City
     if (opts.city && input.city) {
-        tags.push(['g', input.city, 'city']);
+        tags.push(['g', input.city, 'cityName']);
     }
 
     // Continent
     if (opts.continent && input.continent) {
-        tags.push(['g', input.continent, 'continent']);
+        tags.push(['g', input.continent, 'continentName']);
     }
 
     // Continent Code
@@ -148,53 +149,66 @@ const generateTags = (input: InputData, opts: Options): Tag[] => {
 
     // Planet
     if(opts.planet || input?.planet) {
-        tags.push(['g', input?.planet? input.planet: 'Earth', 'planet']);
+        tags.push(['g', input?.planet? input.planet: 'Earth', 'planetName']);
     }
 
-    return opts?.dedupe === true? dedupe(tags, opts?.applyChanges): tags;
+    return opts?.dedupe === true? dedupe(tags): tags;
 };
 
-const dedupe = (tags: Tag[], applyChanges: boolean): Tag[] => {
+export const dedupe = (tags: Tag[]): Tag[] => {
     let deduped: Tag[] = [];
-    const isDuplicate = (tag: Tag, array: Tag[]): boolean => {
-        // Allow all 'lat', 'lon', and 'geohash' tags
-        if (['lat', 'lon', 'geohash'].includes(tag[2])) {
-            return false;
-        }
-        return array.some(
-            item => item[2] === tag[2] && item.length === 4 && tag.length === 4 && item[3] === tag[3]
-        );
-    };
+
+    const isDuplicate = (tag: Tag[], array) => array.some(item => item[1] === tag[1] && item[2] === tag[2]);
+
+    tags = filterNonStringTags(tags)
 
     tags.forEach(tag => {
-        // ISO-3166-3 tags are always added
-        if (tag.length === 4 && tag[3].startsWith('ISO-3166-3')) {
-            deduped.push(tag);
+        // Check if the tag is ISO-3166-3 and if it's a duplicate
+        if (tag?.[3]?.startsWith('ISO-3166-3')) {
+            const existingIso31661or2Tag = deduped.find(t => t[1] === tag[1] && t[2] === tag[2] && !t?.[3]?.startsWith('ISO-3166-3'));
+            if (!existingIso31661or2Tag && !isDuplicate(tag, deduped)) {
+                deduped.push(tag);
+            }
         } else if (!isDuplicate(tag, deduped)) {
             deduped.push(tag);
         }
     });
 
-    const iso3166Categories = ['countryCode', 'country'];
-
-    if(applyChanges) {
-        // Filter out ISO-3166-1 and ISO-3166-2 tags if ISO-3166-3 tags are present for the same category
-        iso3166Categories.forEach(category => {
-            const hasISO31663 = deduped.some(tag => tag[2] === category && tag[3] && tag[3].startsWith('ISO-3166-3'));
-            if (hasISO31663) {
-                deduped = deduped.filter(tag => !(tag[2] === category && (tag[3] && (tag[3].startsWith('ISO-3166-1') || tag[3].startsWith('ISO-3166-2')))));
-            }
-        });
-    }
     // Additionally, filter out ISO-3166-2 tags if ISO-3166-1 tags are present for the same category
-    iso3166Categories.forEach(category => {
+    ['countryCode', 'country'].forEach(category => {
         const hasISO31661 = deduped.some(tag => tag[2] === category && tag[3] && tag[3].startsWith('ISO-3166-1'));
         if (hasISO31661) {
             deduped = deduped.filter(tag => !(tag[2] === category && tag[3] && tag[3].startsWith('ISO-3166-2')));
         }
     });
-    return deduped;
+    return sortTagsByKey(deduped);
 };
+
+export const generateTagKey = (type: string): string => {
+    return type === 'name' ? `countryName` : `countryCode`;
+};
+
+
+const sortTagsByKey = (tags) => {
+    return tags.sort((a, b) => {
+        if (a[2] < b[2]) {
+            return -1;
+        }
+        if (a[2] > b[2]) {
+            return 1;
+        }
+        return 0;
+    });
+};
+
+/**
+ * Filters out tags that contain non-string items.
+ * @param {Array} tags - An array of tags, where each tag is an array.
+ * @returns {Array} Filtered array of tags.
+ */
+function filterNonStringTags(tags) {
+    return tags.filter(tag => tag.every(item => typeof item === 'string'));
+}
 
 // export function logger(...args){
 //     if( this.debug === true ) 
@@ -223,6 +237,9 @@ export default (input: InputData | null, opts?: Options): Array<[string, string,
         debug: false,
         ...opts
     };
+
+    if(opts.iso31663) 
+        opts.iso31661 = true
 
     return generateTags(input, opts);
 };

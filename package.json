@@ -1,6 +1,6 @@
 {
   "name": "nostr-geotags",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Give an object of geodata, returns standardized nostr geotags ",
   "type": "module",
   "main": "dist/index.js",

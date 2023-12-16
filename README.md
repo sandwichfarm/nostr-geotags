@@ -1,4 +1,4 @@
-# nostr-geotags <small>`v0.0.7`</small>
+# nostr-geotags <small>`v0.0.8`</small>
 
 [![publish](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml) [![cov](https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg)](https://github.com/sandwichfarm/nostr-geotags/actions)
 
@@ -66,11 +66,10 @@ The `options` object specifies which types of tags to generate.
 # ISO options
 - `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `true`.
 - `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
-- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`. See `applyChanges` 
+- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`. See `ISO-3166-3 Behaviors`  
 
 # Transform options
 - `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
-- `applyChanges` (boolean): Apply ISO 3166-3 changes, overwriting ISO 3166-1. If false, ISO 3166-3 changes will be appended when they exist. Only applies when `iso31663===true`. Default `false` 
 
 # Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
@@ -83,6 +82,22 @@ Please note: that these will only have an effect on the output if the input for 
 - `continent` (boolean): Include a tag for the continent. Default: `false`.
 - `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
 - `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
+
+## ISO-3166-3 Behaviors
+
+When `iso31663` is enabled, any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counter-part, will be appended to the tags array. Here's an example:
+
+```
+[
+  [ 'g', 'AI', 'countryCode', 'ISO-3166-1:alpha2' ],
+  [ 'g', 'DJ', 'countryCode', 'ISO-3166-3:alpha2' ],
+  [ 'g', 'AIA', 'countryCode', 'ISO-3166-1:alpha3' ],
+  [ 'g', '660', 'countryCode', 'ISO-3166-1:numeric' ],
+  [ 'g', 'Anguilla', 'countryName', 'ISO-3166-1:name' ]
+]
+```
+
+Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the changed `ISO-3166-3` code. Since the other `ISO-3166-3` properties for `AI` are the same as their `ISO-3166-1` counter-parts, they are not included. 
 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
@@ -128,6 +143,8 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 
 9. **Planet**: `[ 'g', 'Earth', 'planet' ]`
    - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
+
+
 
 ## Example Response
 
