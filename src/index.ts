@@ -288,7 +288,18 @@ export const generateRegionTagKey = (type: string): string => {
     return type === 'name'? `regionName`: type === 'parent'? `countryCode`: `regionCode`;
 };
 
-
+/**
+ * Filters out tags of a specific type from an array of tags.
+ *
+ * @param {GeoTag[]} tags - The array of geotags to be filtered.
+ * @param {string} type - The type of tag to be filtered out.
+ * @returns {GeoTag[]} A new array with the specified type of tags removed.
+ *
+ * This utility function filters out tags from an array based on the provided type.
+ * It iterates over the array and excludes any tags where the third element (the type identifier)
+ * matches the specified type. This is useful for removing specific types of geotags from
+ * a list of various tags.
+ */
 export const filterOutType = (tags: GeoTag[], type: string): GeoTag[] => {
     return tags.filter(tag => tag[2]!== type);
 }
@@ -321,7 +332,22 @@ function filterNonStringTags(tags: GeoTag[]): GeoTag[] {
     return tags.filter(tag => tag.every(item => typeof item === 'string'));
 }
 
-export default (input: InputData | null, opts?: Options): Array<[string, string, string] | [string, string, string, string]> => {
+/**
+ * Produces an array of nostr `g` (geo) tag arrays based on input geo data and options.
+ *
+ * @param {InputData | null} input - The input data for generating tags.
+ * @param {Options} [opts] - Optional parameters to customize tag generation.
+ * @throws {Error} Throws an error if the input data is null or not an object.
+ * @returns {GeoTag[]} An array of generated tags.
+ *
+ * This function is the primary entry point for generating an array of nostr `g` (geo) tag arrays. 
+ * It validates the input data, applies default options if not provided, and invokes the tag generation process.
+ * The options can control the inclusion of various geotags like GPS, ISO-3166 country codes,
+ * city names, continent details, etc. The function can also deduplicate and sort the tags.
+ *
+ * If the input data is null, an error is thrown. The input must be an object.
+ */
+export default (input: InputData | null, opts?: Options): GeoTag[] => {
     if (!input) 
         throw new Error('Input is required');
     if (!(input instanceof Object) || Array.isArray(input) || typeof input!== 'object' || typeof input=== 'function' )
