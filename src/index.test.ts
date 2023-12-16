@@ -1,7 +1,7 @@
 
 
 import { describe, it, expect, vi} from 'vitest';
-import ngeotags, { InputData, Options, Tag, dedupe, generateTagKey } from './index'; // Adjust the import path as needed
+import ngeotags, { InputData, Options, Tag, dedupe, generateCountryTagKey } from './index'; // Adjust the import path as needed
 
 
 
@@ -79,8 +79,7 @@ describe('ngeotags', () => {
         const options: Options = {
             iso31661: true,
             iso31663: true,
-            dedupe: false,
-            applyChanges: true
+            dedupe: false
         };
 
         const result = ngeotags(input, options);
@@ -95,17 +94,15 @@ describe('ngeotags', () => {
 
     it('should return countryName when type is name', () => {
         const type = 'name';
-        const key = generateTagKey(type);
+        const key = generateCountryTagKey(type);
         expect(key).toBe('countryName');
     });
 
     it('should return countryCode when type is not name', () => {
         const type = 'alpha2'; // or any other string that's not 'name'
-        const key = generateTagKey(type);
+        const key = generateCountryTagKey(type);
         expect(key).toBe('countryCode');
     });
-
-
 
     it('should generate tags correctly with all options enabled', () => {
         const input: InputData = {
@@ -123,7 +120,6 @@ describe('ngeotags', () => {
 
         const options: Options = {
             dedupe: true,
-            applyChanges: true,
             iso31661: true,
             iso31662: true,
             iso31663: true,
@@ -320,7 +316,7 @@ describe('ngeotags', () => {
             countryCode: 'AI' // Assuming 'AN' has an ISO-3166-3 change
         };
 
-        const result = ngeotags(input, { iso31663: true, applyChanges: true});
+        const result = ngeotags(input, { iso31663: true });
         console.log(result)
         expect(result.length).toBe(5)
         
