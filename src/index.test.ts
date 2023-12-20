@@ -58,15 +58,15 @@ describe('generateTags()', () => {
             [ 'l', '19.094', 'lon' ],
             [ 'l', '19.09', 'lon' ],
             [ 'l', '19', 'lon' ],
-            [ 'g', 'u2mwdd8q4', 'geohash' ],
-            [ 'g', 'u2mwdd8q', 'geohash' ],
-            [ 'g', 'u2mwdd8', 'geohash' ],
-            [ 'g', 'u2mwdd', 'geohash' ],
-            [ 'g', 'u2mwd', 'geohash' ],
-            [ 'g', 'u2mw', 'geohash' ],
-            [ 'g', 'u2m', 'geohash' ],
-            [ 'g', 'u2', 'geohash' ],
-            [ 'g', 'u', 'geohash' ],
+            [ 'g', 'u2mwdd8q4' ],
+            [ 'g', 'u2mwdd8q' ],
+            [ 'g', 'u2mwdd8' ],
+            [ 'g', 'u2mwdd' ],
+            [ 'g', 'u2mwd' ],
+            [ 'g', 'u2mw' ],
+            [ 'g', 'u2m' ],
+            [ 'g', 'u2' ],
+            [ 'g', 'u' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
             [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
@@ -396,7 +396,7 @@ describe('generateTags()', () => {
         };
 
         const result = ngeotags(input, { geohash: true });
-        expect(result.some(tag => tag[2] === 'geohash')).toBeTruthy();
+        expect(result.some(tag => tag[0] === 'g')).toBeTruthy();
     });
 
     it('should handle ISO-3166-1 correctly with optimistic input', () => {
@@ -589,7 +589,7 @@ describe('generateTags()', () => {
             [ 'l', 'HU-BU', 'ISO-3166-2' ]
         ]))
     })
-    
+
 });
 
 describe('namespace inflection', () => {

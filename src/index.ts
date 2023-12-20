@@ -183,7 +183,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const fullGeohash = ngeohash.encode(input.lat, input.lon);
         for (let i = fullGeohash.length; i > 0; i--) {
             const partialGeohash = fullGeohash.substring(0, i);
-            tags.push(['g', partialGeohash, 'geohash']);
+            tags.push(['g', partialGeohash ]);
         }
     }
 
