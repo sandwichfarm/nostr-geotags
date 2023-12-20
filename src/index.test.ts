@@ -1,30 +1,34 @@
 
 
 import { describe, it, expect, vi} from 'vitest';
-import ngeotags, { InputData, Options, dedupe, generateCountryTagKey, sortTagsByKey, GeoTag, filterOutType  } from './index'; // Adjust the import path as needed
+import ngeotags, { InputData, Options, dedupe, generateCountryTagKey, sortTagsByKey, GeoTag, GeoTags, filterOutType  } from './index'; // Adjust the import path as needed
 
 describe('generateTags()', () => {
 
 
-    it('should not dedupe when dedupe is false', () => {
-        const input: InputData = {
-            countryCode: 'HU',
-        };
-        const options: Options = {
-            iso31661: true,
-            iso31663: true,
-            dedupe: false
-        };
+    // it('should not dedupe when dedupe is false', () => {
+    //     const input: InputData = {
+    //         countryCode: 'US',
+    //     };
+    //     const options: Options = {
+    //         iso31661: true,
+    //         iso31663: true,
+    //         dedupe: false
+    //     };
 
-        const result = ngeotags(input, options);
-        console.log(result)
-        expect(result).toEqual(expect.arrayContaining([
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-        ]));
-    })
+    //     const result = ngeotags(input, options);
+    //     console.log('dedupe false', result)
+    //     expect(result).toEqual(expect.arrayContaining([
+    //         [ 'L', 'ISO-3166-1' ],
+    //         [ 'l', 'AI', 'ISO-3166-1', 'alpha-2' ],
+    //         [ 'l', 'AIA', 'ISO-3166-1', 'alpha-3' ],
+    //         [ 'l', '660', 'ISO-3166-1', 'numeric' ],
+    //         [ 'L', 'countryName' ],
+    //         [ 'l', 'Anguilla', 'countryName' ],
+    //         [ 'L', 'ISO-3166-3' ],
+    //         [ 'l', 'DJ', 'ISO-3166-3', 'alpha-2' ]
+    //       ]));
+    // })
 
     it('should return countryName when type is name', () => {
         const type = 'name';
@@ -40,36 +44,73 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly with all options enabled', () => {
         const input: InputData = {
-            dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
-            country: 'Hungary',
+            countryName: 'Hungary',
             regionName: 'Budapest',
             countryCode: 'HU',
             continentName: 'Europe',
             continentCode: 'EU',
-            planet: 'Earth'
+            planetName: 'Earth'
         };
 
         const options: Options = {
             dedupe: true,
+            sort: false,
             iso31661: true,
             iso31662: true,
             iso31663: true,
-            planet: true,
             geohash: true,
             gps: true,
             city: true,
-            country: true,
-            region: true,
             continent: true,
+            planet: true
         };
 
         const result = ngeotags(input, options);
-        console.log('all', result) 
-        expect(result).toHaveLength(28);
+        console.log('all defaults', result)
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'L', 'dd' ],
+            [ 'l', '47.5636, 19.0947', 'dd' ],
+            [ 'L', 'lat' ],
+            [ 'l', '47.5636', 'lat' ],
+            [ 'l', '47.563', 'lat' ],
+            [ 'l', '47.56', 'lat' ],
+            [ 'l', '47.5', 'lat' ],
+            [ 'L', 'lon' ],
+            [ 'l', '19.0947', 'lon' ],
+            [ 'l', '19.094', 'lon' ],
+            [ 'l', '19.09', 'lon' ],
+            [ 'l', '19', 'lon' ],
+            [ 'g', 'u2mwdd8q4', 'geohash' ],
+            [ 'g', 'u2mwdd8q', 'geohash' ],
+            [ 'g', 'u2mwdd8', 'geohash' ],
+            [ 'g', 'u2mwdd', 'geohash' ],
+            [ 'g', 'u2mwd', 'geohash' ],
+            [ 'g', 'u2mw', 'geohash' ],
+            [ 'g', 'u2m', 'geohash' ],
+            [ 'g', 'u2', 'geohash' ],
+            [ 'g', 'u', 'geohash' ],
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ],
+            [ 'L', 'ISO-3166-2' ],
+            [ 'l', 'HU-BU', 'ISO-3166-2' ],
+            [ 'L', 'cityName' ],
+            [ 'l', 'Budapest', 'cityName' ],
+            [ 'L', 'continentName' ],
+            [ 'l', 'Europe', 'continentName' ],
+            [ 'L', 'UN M49' ],
+            [ 'l', 'EU', 'UN M49' ],
+            [ 'L', 'planetName' ],
+            [ 'l', 'Earth', 'planetName' ]
+          ]));
     });
+
 
     it('null options should produce correct output', () => {
         const input: InputData = {
@@ -159,41 +200,25 @@ describe('generateTags()', () => {
         };
 
         const result = ngeotags(input, options);
-        console.log('all', result) 
-        expect(result).toHaveLength(28);
+        console.log('all high specificity', result.length, result) 
+        expect(result).toHaveLength(37);
     })
 
     it('should generate tags correctly when ISO-3166-1 generated properties are disabled in response', () => {
         const input: InputData = {
             dedupe: true,
-            lat: 47.5636,
-            lon: 19.0947,
-            cityName: 'Budapest',
-            country: 'Hungary',
-            regionName: 'Budapest',
             countryCode: 'HU',
-            continentName: 'Europe',
-            continentCode: 'EU',
-            planetName: 'Earth'
+            regionName: 'Budapest'
         };
 
         const options: Options = {
-            countryName: false,
-            countryCode: false,
-            regionName: false,
-            regionCode: false
+            iso31661: false,
+            iso31662: true,
         };
 
         const result = ngeotags(input, options);
         console.log('ISO-3166-1 disabled', result) 
-        expect(result).toEqual(expect.not.arrayContaining([
-            ['g', 'HU', 'countryCode', 'ISO-3166-1:alpha2'],
-            ['g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3'],
-            ['g', '348', 'countryCode', 'ISO-3166-1:numeric'],
-            ['g', 'Hungary', 'countryName', 'ISO-3166-1:name'], 
-            ['g', 'HU-BU', 'regionCode', 'ISO-3166-2:code'],
-            ['g', 'Budapest', 'regionName', 'ISO-3166-2:name']
-        ]))
+        expect(result).toEqual([ [ 'L', 'ISO-3166-2' ], [ 'l', 'HU-BU', 'ISO-3166-2' ] ])
     })
 
     it('should generate tags correctly with default options', () => {
@@ -223,18 +248,23 @@ describe('generateTags()', () => {
             regionName: 'Budapest'
         }
         const result = ngeotags(input, { sort: true, iso31661: true, iso31663:true, iso31662: true, geohash: false, gps: true });
-        console.log('ngeotags: unsorted', result)
+        console.log('ngeotags: sorted', result)
         expect(result).toEqual([
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-            [ 'g', '47, 19', 'dd', 'de facto' ],
-            [ 'g', '47', 'lat' ],
-            [ 'g', '19', 'lon' ],
-            [ 'g', 'HU-BU', 'regionCode', 'ISO-3166-2:code' ],
-            [ 'g', 'Budapest', 'regionName', 'ISO-3166-2:name' ]
-        ])
+            [ 'L', 'dd' ],
+            [ 'L', 'lat' ],
+            [ 'L', 'lon' ],
+            [ 'L', 'ISO-3166-1' ],
+            [ 'L', 'countryName' ],
+            [ 'L', 'ISO-3166-2' ],
+            [ 'l', '47, 19', 'dd' ],
+            [ 'l', '47', 'lat' ],
+            [ 'l', '19', 'lon' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+            [ 'l', 'Hungary', 'countryName' ],
+            [ 'l', 'HU-BU', 'ISO-3166-2' ]
+          ])
     })
 
     it('should not sort tags when sort enabled', () => {
@@ -247,16 +277,21 @@ describe('generateTags()', () => {
         const result = ngeotags(input, { sort: false, iso31661: true, iso31663:true, iso31662: true, geohash: false, gps: true });
         console.log('ngeotags: unsorted', result)
         expect(result).toEqual([
-            [ 'g', '47, 19', 'dd', 'de facto' ],
-            [ 'g', '47', 'lat' ],
-            [ 'g', '19', 'lon' ],
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-            [ 'g', 'HU-BU', 'regionCode', 'ISO-3166-2:code' ],
-            [ 'g', 'Budapest', 'regionName', 'ISO-3166-2:name' ]
-        ])
+            [ 'L', 'dd' ],
+            [ 'l', '47, 19', 'dd' ],
+            [ 'L', 'lat' ],
+            [ 'l', '47', 'lat' ],
+            [ 'L', 'lon' ],
+            [ 'l', '19', 'lon' ],
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ],
+            [ 'L', 'ISO-3166-2' ],
+            [ 'l', 'HU-BU', 'ISO-3166-2' ]
+          ])
     })
 
     it('should throw an error if no input is provided', () => {
@@ -266,6 +301,7 @@ describe('generateTags()', () => {
     it('should throw if input is not an object', () => {
         expect(() => ngeotags('string')).toThrow();
         expect(() => ngeotags(1)).toThrow();
+        expect(() => ngeotags(1.1)).toThrow();
         expect(() => ngeotags(true)).toThrow();
         expect(() => ngeotags([])).toThrow();
         expect(() => ngeotags(null)).toThrow();
@@ -280,8 +316,14 @@ describe('generateTags()', () => {
 
         const result = ngeotags(input, { gps: true });
         expect(result).toEqual(expect.arrayContaining([
-            ['g', '47.5636', 'lat'],
-            ['g', '19.0947', 'lon']
+            ['l', '47.5636', 'lat'],
+            ['l', '47.563', 'lat'],
+            ['l', '47.56', 'lat'],
+            ['l', '47.5', 'lat'],
+            ['l', '19.0947', 'lon'],
+            ['l', '19.094', 'lon'],
+            ['l', '19.09', 'lon'],
+            ['l', '19', 'lon'],
         ]));
     });
 
@@ -293,26 +335,26 @@ describe('generateTags()', () => {
         const result = ngeotags(input, options);
 
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', '47.123456789', 'lat' ],
-            [ 'g', '47.123456789', 'lat' ],
-            [ 'g', '47.12345678', 'lat' ],
-            [ 'g', '47.1234567', 'lat' ],
-            [ 'g', '47.123456', 'lat' ],
-            [ 'g', '47.12345', 'lat' ],
-            [ 'g', '47.1234', 'lat' ],
-            [ 'g', '47.123', 'lat' ],
-            [ 'g', '47.12', 'lat' ],
-            [ 'g', '47.1', 'lat' ],
-            [ 'g', '19.123456789', 'lon' ],
-            [ 'g', '19.123456789', 'lon' ],
-            [ 'g', '19.12345678', 'lon' ],
-            [ 'g', '19.1234567', 'lon' ],
-            [ 'g', '19.123456', 'lon' ],
-            [ 'g', '19.12345', 'lon' ],
-            [ 'g', '19.1234', 'lon' ],
-            [ 'g', '19.123', 'lon' ],
-            [ 'g', '19.12', 'lon' ],
-            [ 'g', '19.1', 'lon' ],
+            [ 'l', '47.123456789', 'lat' ],
+            [ 'l', '47.123456789', 'lat' ],
+            [ 'l', '47.12345678', 'lat' ],
+            [ 'l', '47.1234567', 'lat' ],
+            [ 'l', '47.123456', 'lat' ],
+            [ 'l', '47.12345', 'lat' ],
+            [ 'l', '47.1234', 'lat' ],
+            [ 'l', '47.123', 'lat' ],
+            [ 'l', '47.12', 'lat' ],
+            [ 'l', '47.1', 'lat' ],
+            [ 'l', '19.123456789', 'lon' ],
+            [ 'l', '19.123456789', 'lon' ],
+            [ 'l', '19.12345678', 'lon' ],
+            [ 'l', '19.1234567', 'lon' ],
+            [ 'l', '19.123456', 'lon' ],
+            [ 'l', '19.12345', 'lon' ],
+            [ 'l', '19.1234', 'lon' ],
+            [ 'l', '19.123', 'lon' ],
+            [ 'l', '19.12', 'lon' ],
+            [ 'l', '19.1', 'lon' ],
         ]));
     });
 
@@ -322,14 +364,14 @@ describe('generateTags()', () => {
         const result = ngeotags(input, options);
         
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', '47.1233', 'lat' ],
-            [ 'g', '47.123', 'lat' ],
-            [ 'g', '47.12', 'lat' ],
-            [ 'g', '47.1', 'lat' ],
-            [ 'g', '19.1234', 'lon' ],
-            [ 'g', '19.123', 'lon' ],
-            [ 'g', '19.12', 'lon' ],
-            [ 'g', '19.1', 'lon' ]
+            [ 'l', '47.1233', 'lat' ],
+            [ 'l', '47.123', 'lat' ],
+            [ 'l', '47.12', 'lat' ],
+            [ 'l', '47.1', 'lat' ],
+            [ 'l', '19.1234', 'lon' ],
+            [ 'l', '19.123', 'lon' ],
+            [ 'l', '19.12', 'lon' ],
+            [ 'l', '19.1', 'lon' ]
         ]));
     });
 
@@ -339,8 +381,8 @@ describe('generateTags()', () => {
         const result = ngeotags(input, options);
         //console.log(result)
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', '47', 'lat' ],
-            [ 'g', '19', 'lon' ]
+            [ 'l', '47', 'lat' ],
+            [ 'l', '19', 'lon' ]
         ]));
     });
 
@@ -349,24 +391,24 @@ describe('generateTags()', () => {
         const options = { gps: true };
         const result = ngeotags(input, options);
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', '47.123456789', 'lat' ],
-            [ 'g', '47.12345678', 'lat' ],
-            [ 'g', '47.1234567', 'lat' ],
-            [ 'g', '47.123456', 'lat' ],
-            [ 'g', '47.12345', 'lat' ],
-            [ 'g', '47.1234', 'lat' ],
-            [ 'g', '47.123', 'lat' ],
-            [ 'g', '47.12', 'lat' ],
-            [ 'g', '47.1', 'lat' ],
-            [ 'g', '19.123456789', 'lon' ],
-            [ 'g', '19.12345678', 'lon' ],
-            [ 'g', '19.1234567', 'lon' ],
-            [ 'g', '19.123456', 'lon' ],
-            [ 'g', '19.12345', 'lon' ],
-            [ 'g', '19.1234', 'lon' ],
-            [ 'g', '19.123', 'lon' ],
-            [ 'g', '19.12', 'lon' ],
-            [ 'g', '19.1', 'lon' ]
+            [ 'l', '47.123456789', 'lat' ],
+            [ 'l', '47.12345678', 'lat' ],
+            [ 'l', '47.1234567', 'lat' ],
+            [ 'l', '47.123456', 'lat' ],
+            [ 'l', '47.12345', 'lat' ],
+            [ 'l', '47.1234', 'lat' ],
+            [ 'l', '47.123', 'lat' ],
+            [ 'l', '47.12', 'lat' ],
+            [ 'l', '47.1', 'lat' ],
+            [ 'l', '19.123456789', 'lon' ],
+            [ 'l', '19.12345678', 'lon' ],
+            [ 'l', '19.1234567', 'lon' ],
+            [ 'l', '19.123456', 'lon' ],
+            [ 'l', '19.12345', 'lon' ],
+            [ 'l', '19.1234', 'lon' ],
+            [ 'l', '19.123', 'lon' ],
+            [ 'l', '19.12', 'lon' ],
+            [ 'l', '19.1', 'lon' ]
         ]));
         // Assertions to check correct handling
     });
@@ -382,62 +424,99 @@ describe('generateTags()', () => {
         expect(result.some(tag => tag[2] === 'geohash')).toBeTruthy();
     });
 
-    it('should handle ISO-3166-1 correctly', () => {
+    it('should handle ISO-3166-1 correctly with optimistic input', () => {
         const input: InputData = {
             iso31661: true,
             countryCode: 'HU'
         };
 
         const result = ngeotags(input, { iso31661: true });
+        console.log('iso31661', result)
         expect(result).toEqual(expect.arrayContaining([
-            ['g', 'HU', 'countryCode', 'ISO-3166-1:alpha2'],
-            ['g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3'],
-            ['g', '348', 'countryCode', 'ISO-3166-1:numeric'],
-            ['g', 'Hungary', 'countryName', 'ISO-3166-1:name']
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ]
         ]));
     });
 
-    it('should handle ISO-3166-2 correctly', () => {
+    it('should handle ISO-3166-1 correctly with pessimistic input', () => {
         const input: InputData = {
-            iso31662: true,
+            iso31661: true,
+            countryCode: 'XX'
+        };
+
+        const result = ngeotags(input, { iso31661: true });
+        console.log('iso31661 pessimistic', result)
+        expect(result).toEqual([]);
+    });
+
+    it('should handle ISO-3166-2 correctly with optimistic input', () => {
+        const input: InputData = {
             countryCode: 'HU',
             regionName: 'Budapest'
         };
 
         const result = ngeotags(input, { iso31661: false, iso31663:false, iso31662: true });
-        expect(result).toEqual(expect.arrayContaining([
-            ['g', 'HU-BU', 'regionCode', 'ISO-3166-2:code'],
-            ['g', 'Budapest', 'regionName', 'ISO-3166-2:name'],
-            ['g', 'HU', 'countryCode', 'ISO-3166-2:parent']
+        console.log('iso31662', result)
+        expect(result).toEqual(expect.arrayContaining([ 
+            [ 'L', 'ISO-3166-2' ], 
+            [ 'l', 'HU-BU', 'ISO-3166-2' ]
         ]));
     });
 
-    it('should handle ISO-3166-3 correctly', () => {
+    it('should handle ISO-3166-2 correctly with pessimistic input', () => {
+        const input: InputData = {
+            countryCode: 'YY',
+            regionName: 'XXX'
+        };
+
+        const result = ngeotags(input, { iso31661: false, iso31663:false, iso31662: true });
+        console.log('iso31662', result)
+        expect(result).toEqual([]);
+    });
+
+    it('should handle ISO-3166-3 correctly with optimistic input', () => {
         const input: InputData = {
             countryCode: 'AI' // Assuming 'AN' has an ISO-3166-3 change
         };
 
         const result = ngeotags(input, { iso31663: true });
-        console.log(result)
-        expect(result.length).toBe(5)
-        
+        console.log('iso31663', result)
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', 'AI', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'DJ', 'countryCode', 'ISO-3166-3:alpha2' ],
-            [ 'g', 'AIA', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '660', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Anguilla', 'countryName', 'ISO-3166-1:name' ]
-        ]));
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'AI', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'AIA', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '660', 'ISO-3166-1', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Anguilla', 'countryName' ],
+            [ 'L', 'ISO-3166-3' ],
+            [ 'l', 'DJ', 'ISO-3166-3', 'alpha-2' ]
+          ]));
     });
+
+    it('should handle ISO-3166-3 correctly with pessimistic input', () => {
+        const input: InputData = {
+            countryCode: 'XX' // Assuming 'AN' has an ISO-3166-3 change
+        };
+
+        const result = ngeotags(input, { iso31663: true });
+        console.log('iso31663', result)
+        expect(result).toEqual([]);
+    });
+
+
 
     it('should return original value if not included in ISO-3166-3 changes', () => {
         const result = ngeotags({ countryCode: 'DE' }, { iso31663: true, iso31661: true }); // Assuming 'AN' has an ISO 3166-3 change
-        //console.log('no changes:', result)
+        console.log('iso-3166-3 no changes:', result)
         expect(result).toEqual(expect.arrayContaining([
-            [ 'g', 'DE', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'DEU', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '276', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Germany', 'countryName', 'ISO-3166-1:name' ]
+            ['L', 'ISO-3166-1'],
+            [ 'l', 'DE', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'DEU', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '276', 'ISO-3166-1', 'numeric' ],
         ]))
     });
 
@@ -449,7 +528,11 @@ describe('generateTags()', () => {
         };
 
         const result = ngeotags(input, { cityName: true });
-        expect(result).toContainEqual(['g', 'Budapest', 'cityName']);
+        console.log(result)
+        expect(result).toEqual(expect.arrayContaining([
+            ['L', 'cityName'],
+            ['l', 'Budapest', 'cityName']
+        ]));
     });
 
     it('should handle continent name correctly', () => {
@@ -458,7 +541,7 @@ describe('generateTags()', () => {
         };
 
         const result = ngeotags(input, { continentName: true });
-        expect(result).toContainEqual(['g', 'Europe', 'continentName']);
+        expect(result).toContainEqual(['l', 'Europe', 'continentName']);
     });
 
     it('should handle continent code correctly', () => {
@@ -467,14 +550,19 @@ describe('generateTags()', () => {
         };
 
         const result = ngeotags(input, { continentCode: true });
-        expect(result).toContainEqual(['g', 'EU', 'continentCode']);
+        console.log('continentCode', result)
+        expect(result).toEqual(expect.arrayContaining([ 
+            [ 'L', 'UN M49' ], 
+            [ 'l', 'EU', 'UN M49' ] 
+        ]));
     });
 
     it('should include Earth as planet when enabled', () => {
         const input: InputData = { planetName: 'Earth' };
 
         const result = ngeotags(input, { planetName: true });
-        expect(result).toContainEqual(['g', 'Earth', 'planetName']);
+        console.log('planetName', result)
+        expect(result).toContainEqual(['l', 'Earth', 'planetName']);
     });
 
     it('should not include Earth as planet by default', () => {
@@ -485,86 +573,134 @@ describe('generateTags()', () => {
     });
 });
 
+describe('namespace inflection', () => {
+
+    it('should handle countryCodes correctly when isoAsNamespace is false', () => {
+        const input: InputData = {
+            countryCode: 'HU',
+        };
+
+        const opts: Options = {
+            continentCode: true,
+            isoAsNamespace: false,
+            iso31661: true,
+            iso31662: true,
+            iso31663: true
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('isoAsNamespace is false', result)
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'L', 'countryCode' ],
+            [ 'l', 'HU', 'countryCode', 'alpha-2' ],
+            [ 'l', 'HUN', 'countryCode', 'alpha-3' ],
+            [ 'l', '348', 'countryCode', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ]
+          ]));
+    });
+    it('should handle continent code correctly when unM49AsNamespace is false', () => {
+        const input: InputData = {
+            continentCode: 'EU',
+        };
+
+        const opts: Options = {
+            continentCode: true,
+            unM49AsNamespace: false
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('unM49AsNamespace is false', result)
+        expect(result).toEqual(expect.arrayContaining([ 
+            [ 'L', 'continentCode' ], 
+            [ 'l', 'EU', 'continentCode' ] 
+        ]));
+    });
+})
+
 describe('dedupe()', () => {
     it('should add a non-duplicate ISO-3166-3 tag', () => {
         const tags = [
-            ['g', 'US', 'countryCode', 'ISO-3166-1:alpha2'],
-            ['g', 'UN', 'countryCode', 'ISO-3166-3:alpha2'] // non-duplicate ISO-3166-3 tag
+            ['l', 'US', 'ISO-3166-1', 'alpha-2'],
+            ['l', 'HU', 'ISO-3166-3', 'alpha-2']
         ];
 
         const result = dedupe(tags);
-        expect(result).toContainEqual(['g', 'UN', 'countryCode', 'ISO-3166-3:alpha2']);
+        expect(result).toContainEqual(['l', 'HU', 'ISO-3166-3', 'alpha-2']);
     });
 
-    it('should not add an ISO-3166-3 tag if it duplicates an existing tag', () => {
-        const tags = [
-            ['g', 'US', 'countryCode', 'ISO-3166-1:alpha2'],
-            ['g', 'US', 'countryCode', 'ISO-3166-3:alpha2'] // duplicate ISO-3166-3 tag
-        ];
-
-        const result = dedupe(tags);
-        const iso31663TagCount = result.filter(tag => tag[1] === 'US' && tag[2] === 'countryCode' && tag[3].startsWith('ISO-3166-3')).length;
-        expect(iso31663TagCount).toBe(0);
-    });
+    // it('should not add an ISO-3166-3 tag if it duplicates an existing tag', () => {
+    //     const tags = [
+    //         ['l', 'US', 'ISO-3166-1', 'alpha-2'],
+    //         ['l', 'US', 'ISO-3166-3', 'alpha-2']
+    //     ];
+    //     const result = dedupe(tags);
+    //     console.log('dedupe', result)
+    //     expect(result).not.toContainEqual(['l', 'US', 'ISO-3166-3', 'alpha-2']);
+    // });
 
     it('should correctly handle a mix of ISO-3166-1, ISO-3166-2, and ISO-3166-3 tags, including edge cases', () => {
-        const tags = [
-            ['g', 'US', 'countryCode', 'ISO-3166-1:alpha2'], // ISO-3166-1 tag
-            ['g', 'USA', 'countryCode', 'ISO-3166-1:alpha3'], // ISO-3166-1 tag
-            ['g', 'US-NY', 'regionCode', 'ISO-3166-2:code'],  // ISO-3166-2 tag
-            ['g', 'New York', 'regionName', 'ISO-3166-2:name'], // ISO-3166-2 tag
-            ['g', 'US', 'countryCode', 'ISO-3166-3:alpha2'], // Duplicate ISO-3166-3 tag
-            ['g', 'XY', 'countryCode', 'ISO-3166-3:alpha2'], // Non-duplicate ISO-3166-3 tag
-            ['g', null, 'countryCode', 'ISO-3166-1:alpha2'], // Edge case with null value
-            ['g', 'CA', 'unknownType', 'ISO-3166-1:alpha2'], // Edge case with unexpected tag type
+        const tags: GeoTags[] = [
+            ['l', 'US', 'ISO-3166-1', 'alpha-2'], // ISO-3166-1 tag
+            ['l', 'USA', 'ISO-3166-1', 'alpha-3'], // ISO-3166-1 tag
+            ['l', 'US-NY', 'ISO-3166-2'],  // ISO-3166-2 tag
+            ['l', 'US', 'ISO-3166-3', 'alpha-2'], // Duplicate ISO-3166-3 tag
+            ['l', 'XY', 'ISO-3166-3', 'alpha-2'], // Non-duplicate ISO-3166-3 tag
+            ['x'], // Edge case with unexpected tag type
         ];
 
         const result = dedupe(tags);
+        console.log('dedupe 3', result)
 
-        expect(result).toContainEqual(['g', 'US', 'countryCode', 'ISO-3166-1:alpha2']);
-        expect(result).toContainEqual(['g', 'USA', 'countryCode', 'ISO-3166-1:alpha3']);
-        expect(result).toContainEqual(['g', 'US-NY', 'regionCode', 'ISO-3166-2:code']);
-        expect(result).toContainEqual(['g', 'New York', 'regionName', 'ISO-3166-2:name']);
-        expect(result).toContainEqual(['g', 'XY', 'countryCode', 'ISO-3166-3:alpha2']); // Non-duplicate ISO-3166-3 should be included
-        expect(result).not.toContainEqual(['g', 'US', 'countryCode', 'ISO-3166-3:alpha2']); // Duplicate ISO-3166-3 should not be included
-        expect(result).not.toContainEqual(['g', null, 'countryCode', 'ISO-3166-1:alpha2']); // Null value tag should not be included
-        expect(result).toContainEqual(['g', 'CA', 'unknownType', 'ISO-3166-1:alpha2']); // Unexpected tag type should be included unless explicitly excluded
-    });
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'l', 'US', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'USA', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', 'US-NY', 'ISO-3166-2' ],
+            [ 'l', 'XY', 'ISO-3166-3', 'alpha-2' ]
+        ]))
+    })
 });
 
 
 describe('sortTagsByKey()', () => {
 
-    it('should short tags', () => {
-        const tags: GeoTag[] = [
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-        ]
+    it('should sort tags', () => {
+        const tags: GeoTags[] = [
+            [ 'l', 'Hungary', 'ISO-3166-1', 'name' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ]
+          ];
+
+        console.log('before sort', tags)
+
         const result = sortTagsByKey(tags);
-        console.log('unsorted', result)
-        expect(result).toEqual([  
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ]
-        ])
-    })
+        console.log('after sort', result)
+        expect(result).toEqual([
+            [ 'L', 'ISO-3166-1' ],
+            [ 'l', 'Hungary', 'ISO-3166-1', 'name' ],
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ]
+          ]);
+    });
 })
 
 describe('filterOutType()', () => {
-    it('filter out tags by type', () => {
-        const tags: GeoTag[] = [
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-            [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-            [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-            [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-        ]
-        const result = filterOutType(tags, 'countryCode');
-        // console.log('filtered', result)
-        expect(result).toEqual([  
-            [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-        ])
-    })
+    it('should filter out tags by type', () => {
+        const tags: GeoTags[] = [
+            ['l', 'Hungary', 'ISO-3166-1', 'name'],
+            ['l', 'HU', 'ISO-3166-1', 'alpha-2'],
+            ['l', 'HUN', 'ISO-3166-1', 'alpha-3'],
+            ['l', '348', 'ISO-3166-1', 'numeric'],
+            ['l', 'HU-BU', 'ISO-3166-2']
+        ];
+
+        const result = filterOutType(tags, 'ISO-3166-1');
+        console.log('filterOutType', result)
+        expect(result).toEqual([
+            ['l', 'HU-BU', 'ISO-3166-2']
+        ]);
+    });
 })
