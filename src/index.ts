@@ -17,7 +17,6 @@ export interface InputData {
 export interface Options {
     dedupe?: boolean;
     sort?: boolean;
-    sanitize?: boolean;
 
     isoAsNamespace?: boolean;  
     unM49AsNamespace?: boolean;
@@ -131,6 +130,13 @@ const getUpdatedIso31663Values = (type: ISO31663FieldType, code: string): string
     return [code];
 };
 
+export const iso31661Namespace = (opts: Options): string => opts.isoAsNamespace ? 'ISO-3166-1' : 'countryCode';
+
+export const iso31662Namespace = (opts: Options): string  => opts.isoAsNamespace ? 'ISO-3166-2' : 'regionCode';
+
+export const iso31663Namespace = (opts: Options): string  => opts.isoAsNamespace ? 'ISO-3166-3' : 'countryCode';
+
+
 /**
  * Generates an array of `g` tags based on the input data and options provided.
  *
@@ -183,7 +189,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
     if (opts.iso31661 && input.countryCode) {
         const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
-        const namespace = opts.isoAsNamespace ? 'ISO-3166-1' : 'countryCode';
+        const namespace = iso31661Namespace(opts)
         const iso31661Tags: LabelTag[] = [];
         if (countryData) {
             iso31661Tags.push(['l', countryData.alpha2, namespace, 'alpha-2']);
@@ -204,7 +210,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
     if (opts.iso31662 && input.countryCode && input.regionName) {
         const regionData = iso31662.find(r => r.parent === input.countryCode && r.name === input.regionName);
-        const namespace = opts.isoAsNamespace ? 'ISO-3166-2' : 'regionCode';
+        const namespace = iso31662Namespace(opts)
         const iso31662Tags: LabelTag[] = [];
         if (regionData) {
             iso31662Tags.push(['l', regionData.code, namespace]);
@@ -217,10 +223,9 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
     if (opts.iso31663 && input.countryCode) {
         const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
+        const namespace = iso31663Namespace(opts)
         if (countryData) {
             const iso31663Tags: LabelTag[] = [];
-
-            const namespace = opts.isoAsNamespace ? 'ISO-3166-3' : 'countryCode';
 
             // Iterate over all types and check for updated values
             (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach(type => {
@@ -274,67 +279,22 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     let result = tags
 
     if(!opts.country && opts.countryCode !== true){
-        const namespace = opts.isoAsNamespace ? 'ISO-3166-1' : 'countryCode';
+        const namespace = iso31661Namespace(opts)
         result = filterOutType(result, namespace)
     }
     if(!opts.region && opts.regionCode !== true){
-        result = filterOutType(result, 'regionCode');
+        const namespace = iso31662Namespace(opts)
+        result = filterOutType(result, namespace);
     }
-    result = opts?.dedupe === true? dedupe(result): result;
+    // result = opts?.dedupe === true? dedupe(result): result;
     result = opts?.sort === true? sortTagsByKey(result): result;
-    result = opts?.sanitize === true? sanitize(result): result;
+    result = sanitize(result)
     return result
-};
-
-/**
- * Deduplicates an array of tags.
- *
- * @param {GeoTags[]} tags - The array of tags to deduplicate.
- * @returns {GeoTags[]} A deduplicated array of tags.
- *
- * This function removes duplicate tags from the provided array. It checks each tag for duplication
- * against the existing tags in the deduped array. It also filters out certain tags based on specific
- * criteria, such as prioritizing ISO-3166-3 tags over ISO-3166-1 and ISO-3166-2 tags.
- */
-export const dedupe = (tags: GeoTags[]): GeoTags[] => {
-    let deduped: GeoTags[] = [];
-
-    const isDuplicate = (tag: GeoTags, arr: GeoTags[]) => arr.some(item => item[1] === tag[1] && item[2] === tag[2]);
-
-    tags.forEach(tag => {
-        if (tag[0] === 'l' && tag[2] && tag[2].includes('ISO-3166-3')) {
-            // For ISO-3166-3 tags, check if there's an existing ISO-3166-1 tag with the same key but different value
-            const existingIso31661Tag = deduped.find(t => t[1] === tag[1] && t[2] && t[2].includes('ISO-3166-1'));
-            console.log(tag[1], 'exists?', existingIso31661Tag)
-            if (!existingIso31661Tag && !isDuplicate(tag, deduped)) {
-                deduped.push(tag);
-            }
-        } else if (tag[0] === 'l' && (!tag[3] || (tag[3] && !tag[3].includes('ISO-3166-3')))) {
-            // For other 'l' tags, just check for duplicates
-            if (!isDuplicate(tag, deduped)) {
-                deduped.push(tag);
-            }
-        } else if (tag[0] === 'g' || tag[0] === 'L') {
-            // 'g' and 'L' tags are always added
-            deduped.push(tag);
-        }
-    });
-
-    // Filter out ISO-3166-2 tags if ISO-3166-1 tags are present for the same key
-    const iso3166Categories = ['ISO-3166-1', 'ISO-3166-2'];
-    iso3166Categories.forEach(category => {
-        const hasISO31661 = deduped.some(tag => tag[2] === category && tag[3] && tag[3].includes('ISO-3166-1'));
-        if (hasISO31661) {
-            deduped = deduped.filter(tag => !(tag[2] === category && tag[3] && tag[3].includes('ISO-3166-2')));
-        }
-    });
-
-    return deduped;
 };
 
 export const sanitize = (tags: GeoTags[]): GeoTags[] => {   
     tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'L' || tag[0] === 'l')
-    tags = tags.filter(tag => tag[1] !== undefined && tag[1] !== null && tag[1] !== '')
+    tags = filterNonStringTags(tags)
     return tags
 }
 
@@ -353,21 +313,6 @@ export const generateCountryTagKey = (type: string): string => {
 };
 
 /**
- * Generates a region key based on the given type.
- * 
- * @param {string} type - The type of the tag, a ISO-3166-2 field type.
- * @returns {string} The generated tag key.
- * 
- * This function determines the key to be used in a tag array based on the type of data.
- * For the type 'name', it returns 'countryName', indicating the tag represents a country's name.
- * For the type 'parent', it returns 'countryCode', representing an ISO-3166-1 country code.
- * For any other type, it returns 'regionCode', representing an ISO-3166-2 region.
- */
-export const generateRegionTagKey = (type: string): string => {
-    return type === 'name'? `regionName`: type === 'parent'? `countryCode`: `regionCode`;
-};
-
-/**
  * Filters out tags of a specific type from an array of tags.
  *
  * @param {GeoTags[]} tags - The array of geotags to be filtered.
@@ -380,9 +325,8 @@ export const generateRegionTagKey = (type: string): string => {
  * a list of various tags.
  */
 export const filterOutType = (tags: GeoTags[], type: string): GeoTags[] => {
-    return tags.filter(tag => tag[2]!== type);
+    return tags.filter(tag => tag[2]!== type && tag[1]!== type);
 }
-
 
 /**
  * Sorts an array of tags by the key (second item in each tag array).
@@ -407,7 +351,7 @@ export const sortTagsByKey = (tags: GeoTags[]): GeoTags[] => {
  * @param {GeoTags[]} tags - An array of tags, where each tag is an array.
  * @returns {GeoTags[]} Filtered array of tags.
  */
-function filterNonStringTags(tags: GeoTags[]): GeoTags[] {
+export function filterNonStringTags(tags: GeoTags[]): GeoTags[] {
     return tags.filter(tag => tag.every(item => typeof item === 'string'));
 }
 
@@ -434,7 +378,6 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
     opts = {
         dedupe: true,
         sort: false,
-        sanitize: true,
 
         isoAsNamespace: true,
         unM49AsNamespace: true,

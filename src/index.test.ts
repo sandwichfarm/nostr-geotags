@@ -1,34 +1,9 @@
 
 
 import { describe, it, expect, vi} from 'vitest';
-import ngeotags, { InputData, Options, dedupe, generateCountryTagKey, sortTagsByKey, GeoTag, GeoTags, filterOutType  } from './index'; // Adjust the import path as needed
+import ngeotags, { InputData, Option, filterNonStringTags, generateCountryTagKey, sortTagsByKey, GeoTags, filterOutType, iso31661Namespace, iso31662Namespace, iso31663Namespace  } from './index'; // Adjust the import path as needed
 
 describe('generateTags()', () => {
-
-
-    // it('should not dedupe when dedupe is false', () => {
-    //     const input: InputData = {
-    //         countryCode: 'US',
-    //     };
-    //     const options: Options = {
-    //         iso31661: true,
-    //         iso31663: true,
-    //         dedupe: false
-    //     };
-
-    //     const result = ngeotags(input, options);
-    //     console.log('dedupe false', result)
-    //     expect(result).toEqual(expect.arrayContaining([
-    //         [ 'L', 'ISO-3166-1' ],
-    //         [ 'l', 'AI', 'ISO-3166-1', 'alpha-2' ],
-    //         [ 'l', 'AIA', 'ISO-3166-1', 'alpha-3' ],
-    //         [ 'l', '660', 'ISO-3166-1', 'numeric' ],
-    //         [ 'L', 'countryName' ],
-    //         [ 'l', 'Anguilla', 'countryName' ],
-    //         [ 'L', 'ISO-3166-3' ],
-    //         [ 'l', 'DJ', 'ISO-3166-3', 'alpha-2' ]
-    //       ]));
-    // })
 
     it('should return countryName when type is name', () => {
         const type = 'name';
@@ -56,7 +31,7 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            dedupe: true,
+            //dedupe: true,
             sort: false,
             iso31661: true,
             iso31662: true,
@@ -114,7 +89,7 @@ describe('generateTags()', () => {
 
     it('null options should produce correct output', () => {
         const input: InputData = {
-            dedupe: true,
+            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
@@ -127,7 +102,7 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            dedupe: true,
+            //dedupe: true,
             iso31661: true,
             iso31662: true,
             iso31663: true,
@@ -160,7 +135,7 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly with all high specificity options enabled', () => {
         const input: InputData = {
-            dedupe: true,
+            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
@@ -173,7 +148,7 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            dedupe: true,
+            //dedupe: true,
             iso31661: true,
             iso31662: true,
             iso31663: true,
@@ -206,7 +181,7 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly when ISO-3166-1 generated properties are disabled in response', () => {
         const input: InputData = {
-            dedupe: true,
+            //dedupe: true,
             countryCode: 'HU',
             regionName: 'Budapest'
         };
@@ -223,7 +198,7 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly with default options', () => {
         const input: InputData = {
-            dedupe: true,
+            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
@@ -571,9 +546,92 @@ describe('generateTags()', () => {
         const result = ngeotags(input, {});
         expect(result.some(tag => tag[2] === 'planetName')).toBeFalsy();
     });
+
+    it('should filter out countryCode when country and countryCode are false', () => {
+        const input: InputData = {
+            countryCode: 'HU'
+        };
+
+        const opts: Options = {
+            country: false,
+            countryCode: false
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('country and countryCode are false', result)
+        expect(result).toEqual(expect.not.arrayContaining([
+            ['L', 'ISO-3166-1'],    
+            [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+            [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+            [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ]
+        ]))
+    })
+
+
+    it('should filter out regionCode when region and regionCode are false', () => {
+
+        const input: InputData = {
+            countryCode: 'HU',
+            regionName: 'Budapest'
+        };
+
+        const opts: Options = {
+            region: false,
+            regionCode: false
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('region and regionCode are false', result)
+        expect(result).toEqual(expect.not.arrayContaining([
+            ['L', 'ISO-3166-2'],    
+            [ 'l', 'HU-BU', 'ISO-3166-2' ]
+        ]))
+    })
+    
 });
 
 describe('namespace inflection', () => {
+
+    describe('iso31661Namespace', () => {
+        it('should return correct namespace for ISO-3166-1 when isoAsNameSpace is true', () => {
+            const opts: Options = { isoAsNamespace: true };
+            const result = iso31661Namespace(opts);
+            expect(result).toBe('ISO-3166-1');
+        });   
+        it('should return correct namespace for ISO-3166-1 when isoAsNameSpace is false ', () => {
+            const opts: Options = { isoAsNamespace: false };
+            const result = iso31661Namespace(opts);
+            expect(result).toBe('countryCode');
+        });   
+    })
+
+    describe('iso31662Namespace', () => {
+        it('should return correct namespace for ISO-3166-2 when isoAsNameSpace is true', () => {
+            const opts: Options = { isoAsNamespace: true };
+            const result = iso31662Namespace(opts);
+            expect(result).toBe('ISO-3166-2');
+        });   
+        it('should return correct namespace for ISO-3166-2 when isoAsNameSpace is false ', () => {
+            const opts: Options = { isoAsNamespace: false };
+            const result = iso31662Namespace(opts);
+            expect(result).toBe('regionCode');
+        });   
+    })
+
+    describe('iso31663Namespace', () => {
+        it('should return correct namespace for ISO-3166-3 when isoAsNameSpace is true', () => {
+            const opts: Options = { isoAsNamespace: true };
+            const result = iso31663Namespace(opts);
+            expect(result).toBe('ISO-3166-3');
+        });   
+        it('should return correct namespace for ISO-3166-1 when isoAsNameSpace is false ', () => {
+            const opts: Options = { isoAsNamespace: false };
+            const result = iso31663Namespace(opts);
+            expect(result).toBe('countryCode');
+        });   
+    })
 
     it('should handle countryCodes correctly when isoAsNamespace is false', () => {
         const input: InputData = {
@@ -606,7 +664,10 @@ describe('namespace inflection', () => {
 
         const opts: Options = {
             continentCode: true,
-            unM49AsNamespace: false
+            unM49AsNamespace: false,
+            iso31661: true,
+            iso31662: true,
+            iso31663: true
         }
 
         const result = ngeotags(input, opts);
@@ -616,18 +677,19 @@ describe('namespace inflection', () => {
             [ 'l', 'EU', 'continentCode' ] 
         ]));
     });
+    
 })
 
-describe('dedupe()', () => {
-    it('should add a non-duplicate ISO-3166-3 tag', () => {
-        const tags = [
-            ['l', 'US', 'ISO-3166-1', 'alpha-2'],
-            ['l', 'HU', 'ISO-3166-3', 'alpha-2']
-        ];
+// describe('dedupe()', () => {
+//     it('should add a non-duplicate ISO-3166-3 tag', () => {
+//         const tags = [
+//             ['l', 'US', 'ISO-3166-1', 'alpha-2'],
+//             ['l', 'HU', 'ISO-3166-3', 'alpha-2']
+//         ];
 
-        const result = dedupe(tags);
-        expect(result).toContainEqual(['l', 'HU', 'ISO-3166-3', 'alpha-2']);
-    });
+//         const result = dedupe(tags);
+//         expect(result).toContainEqual(['l', 'HU', 'ISO-3166-3', 'alpha-2']);
+//     });
 
     // it('should not add an ISO-3166-3 tag if it duplicates an existing tag', () => {
     //     const tags = [
@@ -639,27 +701,27 @@ describe('dedupe()', () => {
     //     expect(result).not.toContainEqual(['l', 'US', 'ISO-3166-3', 'alpha-2']);
     // });
 
-    it('should correctly handle a mix of ISO-3166-1, ISO-3166-2, and ISO-3166-3 tags, including edge cases', () => {
-        const tags: GeoTags[] = [
-            ['l', 'US', 'ISO-3166-1', 'alpha-2'], // ISO-3166-1 tag
-            ['l', 'USA', 'ISO-3166-1', 'alpha-3'], // ISO-3166-1 tag
-            ['l', 'US-NY', 'ISO-3166-2'],  // ISO-3166-2 tag
-            ['l', 'US', 'ISO-3166-3', 'alpha-2'], // Duplicate ISO-3166-3 tag
-            ['l', 'XY', 'ISO-3166-3', 'alpha-2'], // Non-duplicate ISO-3166-3 tag
-            ['x'], // Edge case with unexpected tag type
-        ];
+//     it('should correctly handle a mix of ISO-3166-1, ISO-3166-2, and ISO-3166-3 tags, including edge cases', () => {
+//         const tags: GeoTags[] = [
+//             ['l', 'US', 'ISO-3166-1', 'alpha-2'], // ISO-3166-1 tag
+//             ['l', 'USA', 'ISO-3166-1', 'alpha-3'], // ISO-3166-1 tag
+//             ['l', 'US-NY', 'ISO-3166-2'],  // ISO-3166-2 tag
+//             ['l', 'US', 'ISO-3166-3', 'alpha-2'], // Duplicate ISO-3166-3 tag
+//             ['l', 'XY', 'ISO-3166-3', 'alpha-2'], // Non-duplicate ISO-3166-3 tag
+//             ['x'], // Edge case with unexpected tag type
+//         ];
 
-        const result = dedupe(tags);
-        console.log('dedupe 3', result)
+//         const result = dedupe(tags);
+//         console.log('dedupe 3', result)
 
-        expect(result).toEqual(expect.arrayContaining([
-            [ 'l', 'US', 'ISO-3166-1', 'alpha-2' ],
-            [ 'l', 'USA', 'ISO-3166-1', 'alpha-3' ],
-            [ 'l', 'US-NY', 'ISO-3166-2' ],
-            [ 'l', 'XY', 'ISO-3166-3', 'alpha-2' ]
-        ]))
-    })
-});
+//         expect(result).toEqual(expect.arrayContaining([
+//             [ 'l', 'US', 'ISO-3166-1', 'alpha-2' ],
+//             [ 'l', 'USA', 'ISO-3166-1', 'alpha-3' ],
+//             [ 'l', 'US-NY', 'ISO-3166-2' ],
+//             [ 'l', 'XY', 'ISO-3166-3', 'alpha-2' ]
+//         ]))
+//     })
+// });
 
 
 describe('sortTagsByKey()', () => {
@@ -703,4 +765,22 @@ describe('filterOutType()', () => {
             ['l', 'HU-BU', 'ISO-3166-2']
         ]);
     });
+})
+
+describe('filterNonStringTags()', () => {   
+    it('should filter out tags that are not strings', () => {
+        const tags: GeoTags[] = [
+            ['l', null, ''],
+            ['l', 3, ''],
+            ['l', true, ''],
+            ['l', undefined, ''],
+            ['l', {}, ''],
+            ['l', [], ''],
+            ['l', new Set(), ''],
+            ['l', new Map(), '']
+        ];
+        const result = filterNonStringTags(tags);
+        console.log('filterNonStringTags', result)
+        expect(result).toEqual([]);
+    })
 })
