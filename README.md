@@ -1,4 +1,4 @@
-# nostr-geotags <small>`v0.0.8`</small>
+# nostr-geotags <small>`v0.1.1`</small>
 
 [![Test](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml) 
 [![publish](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml) 
