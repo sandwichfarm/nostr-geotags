@@ -62,7 +62,7 @@ The `inputData` object can contain the following properties, used to generate ge
 - `countryCode` (string): ISO country code, typically alpha-2 format. No default value.
 - `continent` (string): Name of the continent. No default value.
 - `continentCode` (string): Code representing the continent. No default value.
-- Other properties (any): You can include additional key-value pairs as needed.
+- Other properties (any): Additionally, key value pairs will be ignored but do not throw an error.
 
 ## Options Reference
 The `options` object specifies which types of tags to generate. 
@@ -75,6 +75,8 @@ The `options` object specifies which types of tags to generate.
 
 ### Transform options
 - `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
+- `isoAsNamespace` (boolean): Use ISO standand (ex: `ISO-3166-1`)  as the namespace for tags. If false will use `countryCode` and `regionCode` instead of `ISO-3166-1/3` and `iso-3166-2` respectively. Default: `true`.
+- `unM49AsNamespace` (boolean): Use `UN M49` as the namespace for tags. Default: `true`.
 
 ### Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
@@ -156,36 +158,6 @@ Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the ch
 Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `continentCode`, `continent` **and** `planet` are provided.
 ```
 [
-  [ 'g', 'EU', 'continentCode' ],
-  [ 'g', 'Europe', 'continentName' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-  [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-  [ 'g', 'u2mwdd8q4', 'geohash' ],
-  [ 'g', 'u2mwdd8q', 'geohash' ],
-  [ 'g', 'u2mwdd8', 'geohash' ],
-  [ 'g', 'u2mwdd', 'geohash' ],
-  [ 'g', 'u2mwd', 'geohash' ],
-  [ 'g', 'u2mw', 'geohash' ],
-  [ 'g', 'u2m', 'geohash' ],
-  [ 'g', 'u2', 'geohash' ],
-  [ 'g', 'u', 'geohash' ]
-]
-```
-
-This is a response with all options enabled (deduped, `dedupe: true`)
-
-```
-[
-  [ 'g', 'Budapest', 'cityName' ],
-  [ 'g', 'EU', 'continentCode' ],
-  [ 'g', 'Europe', 'continentName' ],
-  [ 'g', 'HU', 'countryCode', 'ISO-3166-1:alpha2' ],
-  [ 'g', 'HUN', 'countryCode', 'ISO-3166-1:alpha3' ],
-  [ 'g', '348', 'countryCode', 'ISO-3166-1:numeric' ],
-  [ 'g', 'Hungary', 'countryName', 'ISO-3166-1:name' ],
-  [ 'g', '47.5636, 19.0947', 'dd', 'de facto' ],
   [ 'g', 'u2mwdd8q4', 'geohash' ],
   [ 'g', 'u2mwdd8q', 'geohash' ],
   [ 'g', 'u2mwdd8', 'geohash' ],
@@ -195,17 +167,62 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'u2m', 'geohash' ],
   [ 'g', 'u2', 'geohash' ],
   [ 'g', 'u', 'geohash' ],
-  [ 'g', '47.5636', 'lat' ],
-  [ 'g', '47.563', 'lat' ],
-  [ 'g', '47.56', 'lat' ],
-  [ 'g', '47.5', 'lat' ],
-  [ 'g', '19.0947', 'lon' ],
-  [ 'g', '19.094', 'lon' ],
-  [ 'g', '19.09', 'lon' ],
-  [ 'g', '19', 'lon' ],
-  [ 'g', 'Earth', 'planetName' ],
-  [ 'g', 'HU-BU', 'regionCode', 'ISO-3166-2:code' ],
-  [ 'g', 'Budapest', 'regionName', 'ISO-3166-2:name' ]
+  [ 'L', 'ISO-3166-1' ],
+  [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+  [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+  [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'L', 'countryName' ],
+  [ 'l', 'Hungary', 'countryName' ],
+  [ 'L', 'cityName' ],
+  [ 'l', 'Budapest', 'cityName' ],
+  [ 'L', 'continentName' ],
+  [ 'l', 'Europe', 'continentName' ],
+  [ 'L', 'UN M49' ],
+  [ 'l', 'EU', 'UN M49' ]
+]
+```
+
+This is a response with all options enabled (deduped, `dedupe: true`)
+
+```
+[
+  [ 'L', 'dd' ],
+  [ 'l', '47.5636, 19.0947', 'dd' ],
+  [ 'L', 'lat' ],
+  [ 'l', '47.5636', 'lat' ],
+  [ 'l', '47.563', 'lat' ],
+  [ 'l', '47.56', 'lat' ],
+  [ 'l', '47.5', 'lat' ],
+  [ 'L', 'lon' ],
+  [ 'l', '19.0947', 'lon' ],
+  [ 'l', '19.094', 'lon' ],
+  [ 'l', '19.09', 'lon' ],
+  [ 'l', '19', 'lon' ],
+  [ 'g', 'u2mwdd8q4', 'geohash' ],
+  [ 'g', 'u2mwdd8q', 'geohash' ],
+  [ 'g', 'u2mwdd8', 'geohash' ],
+  [ 'g', 'u2mwdd', 'geohash' ],
+  [ 'g', 'u2mwd', 'geohash' ],
+  [ 'g', 'u2mw', 'geohash' ],
+  [ 'g', 'u2m', 'geohash' ],
+  [ 'g', 'u2', 'geohash' ],
+  [ 'g', 'u', 'geohash' ],
+  [ 'L', 'ISO-3166-1' ],
+  [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
+  [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+  [ 'l', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'L', 'countryName' ],
+  [ 'l', 'Hungary', 'countryName' ],
+  [ 'L', 'ISO-3166-2' ],
+  [ 'l', 'HU-BU', 'ISO-3166-2' ],
+  [ 'L', 'cityName' ],
+  [ 'l', 'Budapest', 'cityName' ],
+  [ 'L', 'continentName' ],
+  [ 'l', 'Europe', 'continentName' ],
+  [ 'L', 'UN M49' ],
+  [ 'l', 'EU', 'UN M49' ],
+  [ 'L', 'planetName' ],
+  [ 'l', 'Earth', 'planetName' ]
 ]
 ```
 
