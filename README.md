@@ -12,9 +12,6 @@
 
 This package was derived from needs in [`@nostrwatch`](https://github.com/sandwichfarm/nostr-watch), an _OpenSats Grant Recipient_, and so was made possible by [OpenSats](https://opensats.org/).
 
-## Rationale
-While `NIP-32` labels can be used for geotagging events, it's cumbersome in the filter-case, and problematic for both Parameterized Replaceable Events and Replaceable Events. This format is the result of a conversation from [here](https://github.com/nostr-protocol/nips/pull/763#issuecomment-1710386631)
-
 ## Installation
 The package is available on npm and can be installed using npm, yarn, or pnpm.
 
