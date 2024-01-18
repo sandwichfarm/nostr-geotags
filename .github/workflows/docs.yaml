@@ -53,6 +53,16 @@ jobs:
           key: nostr-geotags-docs
           fail-on-cache-miss: true
 
-      - name: Push to gh-pages branch
-        run: git commit -am "Update Docs @${{ hashFiles('docs') }} " && git push origin gh-pages
+      - name: Configure and Commit
+        run: | 
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -am "Update Docs @${{ hashFiles('docs') }}"
+
+      - name: Push
+          uses: ad-m/github-push-action@master
+          with:
+            github_token: ${{ env.TOKEN }}
+            force: true
+            branch: gh-pages
 
