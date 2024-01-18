@@ -101,7 +101,7 @@ The function returns an array of tuples, where each tuple represents a tag and i
 Which tags you use depend on use-case. If your concerns are namely geospacial, using only geohashes likely suffice, if your concerns around around borders, languages or laws, `ISO-3166-3` may suffice. If your concerns are mixed, a combination of standards will suffice. In most cases the defaults are good, and most likely won't need to be changed unless you are optimizing your tags array. 
 
 ### Tag Types and Their Descriptions
-1. **GPS**: `[ 'l', '<latitude>, <longitude>', 'dd' ]`, `[ 'l', '<latitude>', 'lat' ]` and `[ l', '<longitude>', 'lon' ]`
+1. **GPS**: `[ 'g', '<latitude>, <longitude>', 'dd' ]`, `[ 'g', '<latitude>', 'lat' ]` and `[ l', '<longitude>', 'lon' ]`
    - Coordinates of diminishing resolution from the input latitude and longitude. One of each of these tags are passthrough, but the rest are progressively reduced in their precision until the final decimal point. If an integer is provided for one or both `lat` and `lon`, an integer is returned. 
    
 2. **Geohash**: `[ g', '<geohash>']` (`NIP-52`)
@@ -110,9 +110,9 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 3. **ISO-3166-1 Codes**: 
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.
    - Examples: 
-     - Alpha-2 code: `[ 'l', 'HU', 'ISO-3166-1', 'alpha2' ]`
-     - Alpha-3 code: `[ 'l', 'HUN', 'ISO-3166-1', 'alpha3' ]`
-     - Numeric code: `[ 'l', '348', 'ISO-3166-1', 'numeric' ]`
+     - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1', 'alpha2' ]`
+     - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1', 'alpha3' ]`
+     - Numeric code: `[ 'g', '348', 'ISO-3166-1', 'numeric' ]`
 
 4. **ISO-3166-2 Codes**: 
    - These tags represent region information derived from the `iso-3166` library and are based on the `countryCode` and `regionCode` input values. They are not passthrough values. 
@@ -121,16 +121,16 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
    - These tags also represent country information, but focus on historical changes in country codes. They are not passthrough.
    - Examples mirror the ISO-3166-1 format but relate to updated country codes.
 
-6. **City**: `[ 'l', 'Budapest', 'cityName' ]`
+6. **City**: `[ 'g', 'Budapest', 'cityName' ]`
    - A passthrough from the input city name.
 
-7. **Continent**: `[ 'l', 'Europe', 'continentName' ]`
+7. **Continent**: `[ 'g', 'Europe', 'continentName' ]`
    - A passthrough from the input continent name.
 
-8. **Continent Code**: `[ 'l', 'EU', 'continentCode' ]`
+8. **Continent Code**: `[ 'g', 'EU', 'continentCode' ]`
    - A passthrough from the input continent code.
 
-9. **Planet**: `[ 'l', 'Earth', 'planetName' ]`
+9. **Planet**: `[ 'g', 'Earth', 'planetName' ]`
    - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
 
 ### ISO-3166-3 Behaviors
@@ -138,14 +138,14 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counterpart, will be appended to the tags array. Here's an example:
 
 [
-  [ 'L', 'ISO-3166-1' ],
-  [ 'l', 'AI', 'ISO-3166-1', 'alpha-2' ],
-  [ 'l', 'AIA', 'ISO-3166-1', 'alpha-3' ],
-  [ 'l', '660', 'ISO-3166-1', 'numeric' ],
-  [ 'L', 'ISO-3166-3' ],
-  [ 'l', 'DJ', 'ISO-3166-3', 'alpha-2' ],
-  [ 'L', 'countryName' ],
-  [ 'l', 'Anguilla', 'countryName' ]
+  [ 'G', 'ISO-3166-1' ],
+  [ 'g', 'AI', 'ISO-3166-1', 'alpha-2' ],
+  [ 'g', 'AIA', 'ISO-3166-1', 'alpha-3' ],
+  [ 'g', '660', 'ISO-3166-1', 'numeric' ],
+  [ 'G', 'ISO-3166-3' ],
+  [ 'g', 'DJ', 'ISO-3166-3', 'alpha-2' ],
+  [ 'G', 'countryName' ],
+  [ 'g', 'Anguilla', 'countryName' ]
 ]
 
 Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the changed `ISO-3166-3` code. Since the other `ISO-3166-3` properties for `AI` are the same as their `ISO-3166-1` counter-parts, they are not included. 
@@ -165,18 +165,18 @@ Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `co
   [ 'g', 'u2m' ],
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
-  [ 'L', 'ISO-3166-1' ],
-  [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
-  [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
-  [ 'l', '348', 'ISO-3166-1', 'numeric' ],
-  [ 'L', 'countryName' ],
-  [ 'l', 'Hungary', 'countryName' ],
-  [ 'L', 'cityName' ],
-  [ 'l', 'Budapest', 'cityName' ],
-  [ 'L', 'continentName' ],
-  [ 'l', 'Europe', 'continentName' ],
-  [ 'L', 'UN M49' ],
-  [ 'l', 'EU', 'UN M49' ]
+  [ 'G', 'ISO-3166-1' ],
+  [ 'g', 'HU', 'ISO-3166-1', 'alpha-2' ],
+  [ 'g', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+  [ 'g', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'G', 'countryName' ],
+  [ 'g', 'Hungary', 'countryName' ],
+  [ 'G', 'cityName' ],
+  [ 'g', 'Budapest', 'cityName' ],
+  [ 'G', 'continentName' ],
+  [ 'g', 'Europe', 'continentName' ],
+  [ 'G', 'UN M49' ],
+  [ 'g', 'EU', 'UN M49' ]
 ]
 ```
 
@@ -184,18 +184,18 @@ This is a response with all options enabled (deduped, `dedupe: true`)
 
 ```
 [
-  [ 'L', 'dd' ],
-  [ 'l', '47.5636, 19.0947', 'dd' ],
-  [ 'L', 'lat' ],
-  [ 'l', '47.5636', 'lat' ],
-  [ 'l', '47.563', 'lat' ],
-  [ 'l', '47.56', 'lat' ],
-  [ 'l', '47.5', 'lat' ],
-  [ 'L', 'lon' ],
-  [ 'l', '19.0947', 'lon' ],
-  [ 'l', '19.094', 'lon' ],
-  [ 'l', '19.09', 'lon' ],
-  [ 'l', '19', 'lon' ],
+  [ 'G', 'dd' ],
+  [ 'g', '47.5636, 19.0947', 'dd' ],
+  [ 'G', 'lat' ],
+  [ 'g', '47.5636', 'lat' ],
+  [ 'g', '47.563', 'lat' ],
+  [ 'g', '47.56', 'lat' ],
+  [ 'g', '47.5', 'lat' ],
+  [ 'G', 'lon' ],
+  [ 'g', '19.0947', 'lon' ],
+  [ 'g', '19.094', 'lon' ],
+  [ 'g', '19.09', 'lon' ],
+  [ 'g', '19', 'lon' ],
   [ 'g', 'u2mwdd8q4' ],
   [ 'g', 'u2mwdd8q' ],
   [ 'g', 'u2mwdd8' ],
@@ -205,22 +205,22 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'u2m' ],
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
-  [ 'L', 'ISO-3166-1' ],
-  [ 'l', 'HU', 'ISO-3166-1', 'alpha-2' ],
-  [ 'l', 'HUN', 'ISO-3166-1', 'alpha-3' ],
-  [ 'l', '348', 'ISO-3166-1', 'numeric' ],
-  [ 'L', 'countryName' ],
-  [ 'l', 'Hungary', 'countryName' ],
-  [ 'L', 'ISO-3166-2' ],
-  [ 'l', 'HU-BU', 'ISO-3166-2' ],
-  [ 'L', 'cityName' ],
-  [ 'l', 'Budapest', 'cityName' ],
-  [ 'L', 'continentName' ],
-  [ 'l', 'Europe', 'continentName' ],
-  [ 'L', 'UN M49' ],
-  [ 'l', 'EU', 'UN M49' ],
-  [ 'L', 'planetName' ],
-  [ 'l', 'Earth', 'planetName' ]
+  [ 'G', 'ISO-3166-1' ],
+  [ 'g', 'HU', 'ISO-3166-1', 'alpha-2' ],
+  [ 'g', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+  [ 'g', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'G', 'countryName' ],
+  [ 'g', 'Hungary', 'countryName' ],
+  [ 'G', 'ISO-3166-2' ],
+  [ 'g', 'HU-BU', 'ISO-3166-2' ],
+  [ 'G', 'cityName' ],
+  [ 'g', 'Budapest', 'cityName' ],
+  [ 'G', 'continentName' ],
+  [ 'g', 'Europe', 'continentName' ],
+  [ 'G', 'UN M49' ],
+  [ 'g', 'EU', 'UN M49' ],
+  [ 'G', 'planetName' ],
+  [ 'g', 'Earth', 'planetName' ]
 ]
 ```
 
