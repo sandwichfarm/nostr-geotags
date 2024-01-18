@@ -1,7 +1,5 @@
-name: Test
+name: Coverage
 on: 
-  push:
-  pull_request:
   workflow_dispatch:
   workflow_run:
     workflows: ["Generate Docs"]
