@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '*.js'
+      - '*.json'
 
 jobs:
   publish:
