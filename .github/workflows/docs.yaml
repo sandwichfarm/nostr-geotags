@@ -11,9 +11,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pages: write
-      id-token: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -62,7 +60,7 @@ jobs:
           git config --local user.name "sandwich [bot]"
 
       - name: Set Remote URL with PAT
-        run: git remote set-url origin https://${{ secrets.DOCS_DEPLOY_TOKEN }}@github.com/${{ github.repository }}
+        run: git remote set-url origin https://${{ github.token }}@github.com/${{ github.repository }}
 
       - name: Commit and Push Documentation
         run: |
