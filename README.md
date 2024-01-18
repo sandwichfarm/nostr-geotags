@@ -73,7 +73,7 @@ The `options` object specifies which types of tags to generate.
 
 ### Transform options
 - `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
-- `isoAsNamespace` (boolean): Use ISO standand (ex: `ISO-3166-1`)  as the namespace for tags. If false will use `countryCode` and `regionCode` instead of `ISO-3166-1/3` and `iso-3166-2` respectively. Default: `true`.
+- `isoAsNamespace` (boolean): Use ISO standand (ex: `ISO-3166-1`)  as the namespace for tags. If false will use `countryCode` and `regionCode` instead of `ISO-3166-1/3` and `iso-3166-2` respectively. Default: `false`.
 - `unM49AsNamespace` (boolean): Use `UN M49` as the namespace for tags. Default: `true`.
 
 ### Response Options
@@ -110,9 +110,9 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 3. **ISO-3166-1 Codes**: 
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.
    - Examples: 
-     - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1', 'alpha2' ]`
-     - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1', 'alpha3' ]`
-     - Numeric code: `[ 'g', '348', 'ISO-3166-1', 'numeric' ]`
+     - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1||countryCode', 'alpha2' ]`
+     - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1||countryCode', 'alpha3' ]`
+     - Numeric code: `[ 'g', '348', 'ISO-3166-1||countryCode', 'numeric' ]`
 
 4. **ISO-3166-2 Codes**: 
    - These tags represent region information derived from the `iso-3166` library and are based on the `countryCode` and `regionCode` input values. They are not passthrough values. 
@@ -138,12 +138,12 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counterpart, will be appended to the tags array. Here's an example:
 
 [
-  [ 'G', 'ISO-3166-1' ],
-  [ 'g', 'AI', 'ISO-3166-1', 'alpha-2' ],
-  [ 'g', 'AIA', 'ISO-3166-1', 'alpha-3' ],
-  [ 'g', '660', 'ISO-3166-1', 'numeric' ],
-  [ 'G', 'ISO-3166-3' ],
-  [ 'g', 'DJ', 'ISO-3166-3', 'alpha-2' ],
+  [ 'G', 'ISO-3166-1||countryCode' ],
+  [ 'g', 'AI', 'ISO-3166-1||countryCode', 'alpha-2' ],
+  [ 'g', 'AIA', 'ISO-3166-1||countryCode', 'alpha-3' ],
+  [ 'g', '660', 'ISO-3166-1||countryCode', 'numeric' ],
+  [ 'G', 'ISO-3166-3||countryCode' ],
+  [ 'g', 'DJ', 'ISO-3166-3||countryCode', 'alpha-2' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Anguilla', 'countryName' ]
 ]
@@ -153,7 +153,7 @@ Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the ch
 
 ## Example Response
 
-Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `continentCode`, `continent` **and** `planet` are provided.
+Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `continentCode`, `continent` **and** `planet` are provided, with everything else default
 ```
 [
   [ 'g', 'u2mwdd8q4' ],
@@ -165,18 +165,14 @@ Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `co
   [ 'g', 'u2m' ],
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
-  [ 'G', 'ISO-3166-1' ],
-  [ 'g', 'HU', 'ISO-3166-1', 'alpha-2' ],
-  [ 'g', 'HUN', 'ISO-3166-1', 'alpha-3' ],
+  [ 'G', 'countryCode' ],
+  [ 'g', 'HU', 'countryCode', 'alpha-2' ],
+  [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
   [ 'g', '348', 'ISO-3166-1', 'numeric' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Hungary', 'countryName' ],
   [ 'G', 'cityName' ],
   [ 'g', 'Budapest', 'cityName' ],
-  [ 'G', 'continentName' ],
-  [ 'g', 'Europe', 'continentName' ],
-  [ 'G', 'UN M49' ],
-  [ 'g', 'EU', 'UN M49' ]
 ]
 ```
 
@@ -205,10 +201,10 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'u2m' ],
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
-  [ 'G', 'ISO-3166-1' ],
-  [ 'g', 'HU', 'ISO-3166-1', 'alpha-2' ],
-  [ 'g', 'HUN', 'ISO-3166-1', 'alpha-3' ],
-  [ 'g', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'G', 'countryCode' ],
+  [ 'g', 'HU', 'countryCode', 'alpha-2' ],
+  [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
+  [ 'g', '348', 'countryCode', 'numeric' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Hungary', 'countryName' ],
   [ 'G', 'ISO-3166-2' ],
