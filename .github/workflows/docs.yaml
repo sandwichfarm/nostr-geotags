@@ -66,8 +66,8 @@ jobs:
           git commit -am "Update Docs @${{ hashFiles('docs') }}"
 
       - name: Push
-        run: |
-          git push https://${{ secrets.DOCS_DEPLOY_TOKEN }}@${{ github.repository }} gh-pages
+        run: git push https://${{ secrets.DOCS_DEPLOY_TOKEN }}@github.com/${{ github.repository }} gh-pages
+
 
 
       # - name: Push
