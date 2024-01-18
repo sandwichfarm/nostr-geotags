@@ -62,7 +62,7 @@ export type Geohash = [string, string];
  * @typedef {Array} LabelNamespace
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
- * - First element (string): See NIP-32, always 'L' 
+ * - First element (string): See NIP-32, always 'G' 
  * - Second element (string): The Label's Namespace
  *  
 */
@@ -74,7 +74,7 @@ export type LabelNamespace = [ string, string ]
  * @typedef {Array} Label
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
- * - First element (string): See NIP-32, always 'l' 
+ * - First element (string): See NIP-32, always 'g' 
  * - Second element (string): The value
  * - Second element (string): The namespace
  *  
@@ -97,7 +97,7 @@ export type LabelTag = LabelNamespace | Label;
  * @typedef {Array} Label
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
- * - First element (string): See NIP-32, always 'l' 
+ * - First element (string): See NIP-32, always 'g' 
  * - Second element (string): The value
  * - Second element (string): The namespace
  *  
@@ -154,8 +154,8 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
      // GPS
      if (opts.gps && input.lat && input.lon) {
-        tags.push(['L', `dd`]);
-        tags.push(['l', `${input.lat}, ${input.lon}`, 'dd']);
+        tags.push(['G', `dd`]);
+        tags.push(['g', `${input.lat}, ${input.lon}`, 'dd']);
         
         const maxResolution = 10;
         const truncateToResolution = (num: number, resolution: number): number => {
@@ -165,16 +165,16 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const latResolution = input.lat % 1 === 0 ? 1 : Math.min(input.lat.toString().split('.')[1].length, maxResolution);
         const lonResolution = input.lon % 1 === 0 ? 1 : Math.min(input.lon.toString().split('.')[1].length, maxResolution);
 
-        tags.push(['L', `lat`]);
+        tags.push(['G', `lat`]);
         for (let i = latResolution; i > 0; i--) {
             const truncatedLat = truncateToResolution(input.lat, i);
-            tags.push(['l', truncatedLat.toString(), 'lat']);
+            tags.push(['g', truncatedLat.toString(), 'lat']);
         }
 
-        tags.push(['L', `lon`]);
+        tags.push(['G', `lon`]);
         for (let i = lonResolution; i > 0; i--) {
             const truncatedLon = truncateToResolution(input.lon, i);
-            tags.push(['l', truncatedLon.toString(), 'lon']);
+            tags.push(['g', truncatedLon.toString(), 'lon']);
         }
     }
 
@@ -192,17 +192,17 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31661Namespace(opts)
         const iso31661Tags: LabelTag[] = [];
         if (countryData) {
-            iso31661Tags.push(['l', countryData.alpha2, namespace, 'alpha-2']);
-            iso31661Tags.push(['l', countryData.alpha3, namespace, 'alpha-3']);
-            iso31661Tags.push(['l', countryData.numeric, namespace, 'numeric']);
+            iso31661Tags.push(['g', countryData.alpha2, namespace, 'alpha-2']);
+            iso31661Tags.push(['g', countryData.alpha3, namespace, 'alpha-3']);
+            iso31661Tags.push(['g', countryData.numeric, namespace, 'numeric']);
             if(countryData.name) {
-                iso31661Tags.push(['L', 'countryName']);
-                iso31661Tags.push(['l', countryData.name, 'countryName']);
+                iso31661Tags.push(['G', 'countryName']);
+                iso31661Tags.push(['g', countryData.name, 'countryName']);
             }
         }    
 
         if(iso31661Tags.length > 0){
-            iso31661Tags.unshift(['L', namespace]);
+            iso31661Tags.unshift(['G', namespace]);
             tags.push(...iso31661Tags);
         }
         
@@ -213,10 +213,10 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31662Namespace(opts)
         const iso31662Tags: LabelTag[] = [];
         if (regionData) {
-            iso31662Tags.push(['l', regionData.code, namespace]);
+            iso31662Tags.push(['g', regionData.code, namespace]);
         }
         if(iso31662Tags.length > 0){
-            iso31662Tags.unshift(['L', namespace]);
+            iso31662Tags.unshift(['G', namespace]);
             tags.push(...iso31662Tags);
         }
     }
@@ -243,37 +243,37 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
                 // Add updated values if they are different from the original
                 updatedValues.forEach(updatedValue => {
                     if ( (originalValue !== updatedValue && type !== 'name'))
-                        iso31663Tags.push(['l', updatedValue, namespace, typeMap[type] ]);
+                        iso31663Tags.push(['g', updatedValue, namespace, typeMap[type] ]);
                 });
             });
     
             // Add the ISO-3166-3 namespace label if there are any updated tags
             if (iso31663Tags.length > 0) {
-                iso31663Tags.unshift(['L', namespace]);
+                iso31663Tags.unshift(['G', namespace]);
                 tags.push(...iso31663Tags);
             }
         }
     }
 
     if ((opts.city || opts.cityName) && input.cityName) {
-        tags.push(['L', 'cityName']);
-        tags.push(['l', input.cityName, 'cityName']);
+        tags.push(['G', 'cityName']);
+        tags.push(['g', input.cityName, 'cityName']);
     }
 
     if ((opts.continent || opts.continentName) && input.continentName) {
-        tags.push(['L', 'continentName']);
-        tags.push(['l', input.continentName, 'continentName']);
+        tags.push(['G', 'continentName']);
+        tags.push(['g', input.continentName, 'continentName']);
     }
 
     if ((opts.continent || opts.continentCode) && input.continentCode) {
         const namespace = opts.unM49AsNamespace ? 'UN M49' : 'continentCode';
-        tags.push(['L', namespace]);
-        tags.push(['l', input.continentCode, namespace]);
+        tags.push(['G', namespace]);
+        tags.push(['g', input.continentCode, namespace]);
     }
 
     if ((opts.planet || opts.planetName) && input.planetName) {
-        tags.push(['L', 'planetName']);
-        tags.push(['l', input.planetName, 'planetName']);
+        tags.push(['G', 'planetName']);
+        tags.push(['g', input.planetName, 'planetName']);
     }
 
     let result = tags
@@ -293,7 +293,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 };
 
 export const sanitize = (tags: GeoTags[]): GeoTags[] => {   
-    tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'L' || tag[0] === 'l')
+    tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'G' || tag[0] === 'g')
     tags = filterNonStringTags(tags)
     return tags
 }

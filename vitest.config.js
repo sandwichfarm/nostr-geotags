@@ -6,9 +6,16 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     globals: true,
+    include: ['src/**/*.test.ts'],
+    exclude: [
+      'node_modules', 
+      'dist', 
+      'docs'
+    ],
     environment: 'node',
     coverage: {
-      provider: 'v8' // or 'v8'
+      provider: 'v8',
+      exclude: ['node_modules', 'dist', 'docs/**/*'],
     },
   },
 });
