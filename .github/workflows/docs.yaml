@@ -61,19 +61,9 @@ jobs:
           mv docs/* ./
           rm -rf docs 
           git add *
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "299465+dskvr@users.noreply.github.com"
+          git config --local user.name "sandwich [bot]"
           git commit -am "Update Docs @${{ hashFiles('docs') }}"
 
       - name: Push
         run: git push https://${{ secrets.DOCS_DEPLOY_TOKEN }}@github.com/${{ github.repository }} gh-pages
-
-
-
-      # - name: Push
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
-      #     force: true
-      #     branch: gh-pages
-
