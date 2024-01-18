@@ -60,9 +60,9 @@ jobs:
           git commit -am "Update Docs @${{ hashFiles('docs') }}"
 
       - name: Push
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ env.TOKEN }}
-            force: true
-            branch: gh-pages
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ env.TOKEN }}
+          force: true
+          branch: gh-pages
 
