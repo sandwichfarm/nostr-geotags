@@ -8,8 +8,6 @@ export interface InputData {
     countryName?: string;
     regionName?: string;
     countryCode?: string;
-    // continentName?: string;
-    // continentCode?: string;
     planetName?: string;
     [key: string]: any;
 }
@@ -35,9 +33,6 @@ export interface Options {
     region?: boolean,
     regionName?: boolean | null,
     regionCode?: boolean | null,
-    // continent?: boolean,
-    // continentName?: boolean | null,
-    // continentCode?: boolean | null,
     planet?: boolean,
     planetName?: boolean | null,
 }
@@ -260,17 +255,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         tags.push(['g', input.cityName, 'cityName']);
     }
 
-    // if ((opts.continent || opts.continentName) && input.continentName) {
-    //     tags.push(['G', 'continentName']);
-    //     tags.push(['g', input.continentName, 'continentName']);
-    // }
-
-    // if ((opts.continent || opts.continentCode) && input.continentCode) {
-    //     const namespace = opts.unM49AsNamespace ? 'UN M49' : 'continentCode';
-    //     tags.push(['G', namespace]);
-    //     tags.push(['g', input.continentCode, namespace]);
-    // }
-
     if ((opts.planet || opts.planetName) && input.planetName) {
         tags.push(['G', 'planetName']);
         tags.push(['g', input.planetName, 'planetName']);
@@ -293,7 +277,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 };
 
 export const sanitize = (tags: GeoTags[]): GeoTags[] => {   
-    tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'G' || tag[0] === 'g')
+    tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'G' )
     tags = filterNonStringTags(tags)
     return tags
 }
@@ -399,10 +383,6 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
         region: true,
         regionName: null,
         regionCode: null,
-
-        // continent: true,
-        // continentName: null, 
-        // continentCode: null,
 
         planet: false,
         planetName: null,

@@ -506,28 +506,6 @@ describe('generateTags()', () => {
         ]));
     });
 
-    // it('should handle continent name correctly', () => {
-    //     const input: InputData = {
-    //         continentName: 'Europe'
-    //     };
-
-    //     const result = ngeotags(input, { continentName: true });
-    //     expect(result).toContainEqual(['g', 'Europe', 'continentName']);
-    // });
-
-    // it('should handle continent code correctly', () => {
-    //     const input: InputData = {
-    //         continentCode: 'EU'
-    //     };
-
-    //     const result = ngeotags(input, { continentCode: true });
-    //     console.log('continentCode', result)
-    //     expect(result).toEqual(expect.arrayContaining([ 
-    //         [ 'G', 'UN M49' ], 
-    //         [ 'g', 'EU', 'UN M49' ] 
-    //     ]));
-    // });
-
     it('should include Earth as planet when enabled', () => {
         const input: InputData = { planetName: 'Earth' };
 
