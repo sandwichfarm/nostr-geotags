@@ -15,22 +15,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Restore Cache
-        id: cache-exists
-        uses: actions/cache/restore@v3
-        with:
-          path: ./cache
-          key: ${{ env.cache-key }}
-          
-      - name: Delete Previous Cache
-        if: ${{ steps.cache-restore.outputs.cache-hit }}
-        continue-on-error: true
-        run: |
-          gh extension install actions/gh-actions-cache
-          gh actions-cache delete "${{ env.cache-key }}" --confirm
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -51,12 +35,17 @@ jobs:
       - name: Create the docs directory locally in CI
         run: npx typedoc src/index.ts
 
+      - name: Hash docs
+        id: hash
+        run: |
+          echo "docs=${{hashFiles('docs')}}" >> "$GITHUB_OUTPUT"
+
       - name: Cache Docs
         id: docs-cache
         uses: actions/cache/save@v3
         with:
           path: docs
-          key: ${{ env.cache-key }}
+          key: ${{ env.cache-key }}-${{ steps.hash.outputs.docs }}
       
       - name: Change branch
         run: git fetch --all && git checkout gh-pages
@@ -69,7 +58,7 @@ jobs:
         id: cache-restore
         with: 
           path: docs
-          key: ${{ env.cache-key }}
+          key: ${{ env.cache-key }}-${{ steps.hash.outputs.docs }}
           fail-on-cache-miss: true
       
       - name: Configure Git
