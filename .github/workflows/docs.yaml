@@ -16,13 +16,11 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: gh-pages  # Check out the gh-pages branch
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20' # Use a Node.js version that supports ES Modules
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
@@ -34,9 +32,30 @@ jobs:
       - name: Build Package
         run: yarn build
 
-      - name: Generate Documentation
+      - name: Create the docs directory locally in CI
         run: npx typedoc src/index.ts
 
+      - name: Cache Docs
+        id: docs-cache
+        uses: actions/cache/save@v3
+        with:
+          path: docs
+          key: nostr-geotags-docs
+      
+      - name: Change branch
+        run: git fetch --all && git checkout gh-pages
+
+      - name: Reset Branch
+        run: rm -rf *
+
+      - name: Restore Docs
+        uses: actions/cache/restore@v3
+        id: cache-restore
+        with: 
+          path: docs
+          key: nostr-geotags-docs
+          fail-on-cache-miss: true
+      
       - name: Configure Git
         run: |
           git config --local user.email "299465+dskvr@users.noreply.github.com"
@@ -47,6 +66,8 @@ jobs:
 
       - name: Commit and Push Documentation
         run: |
+          mv docs/* ./
+          rm -rf docs 
           git add .
           git commit -m "Update Docs" -a || echo "No changes to commit"
           git push origin gh-pages
