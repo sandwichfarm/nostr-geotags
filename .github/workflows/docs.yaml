@@ -43,7 +43,7 @@ jobs:
           key: nostr-geotags-docs
       
       - name: Change branch
-        run: git checkout gh-pages
+        run: git fetch --all && git checkout gh-pages
 
       - name: Restore Docs
         uses: actions/cache/restore@v3
