@@ -6,7 +6,6 @@ on:
       - 'main'
     paths:
       - 'src/**'
-      - 'tests/**'
       - '*.js'
       - '*.json'
 
