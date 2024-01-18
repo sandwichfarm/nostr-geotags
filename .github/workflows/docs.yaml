@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache/restore@v3
         id: cache-restore
         with: 
-          path: .
+          path: docs
           key: nostr-geotags-docs
           fail-on-cache-miss: true
 
