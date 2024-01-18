@@ -276,6 +276,18 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     return result
 };
 
+
+/**
+ * sanitize
+ * Filters and sanitizes an array of GeoTags.
+ *
+ * This function processes an array of GeoTags. It first filters the array to include only those tags
+ * where the first character is 'g' or 'G'. After this initial filtering, it calls the 'filterNonStringTags'
+ * function to typecheck array contents. The resulting array of GeoTags is then returned.
+ *
+ * @param {GeoTags[]} tags - An array of GeoTags to be sanitized
+ * @returns {GeoTags[]} - The sanitized array of GeoTags
+ */
 export const sanitize = (tags: GeoTags[]): GeoTags[] => {   
     tags = tags.filter(tag => tag[0] === 'g' || tag[0] === 'G' )
     tags = filterNonStringTags(tags)

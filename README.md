@@ -45,8 +45,6 @@ The `inputData` object can contain:
 - country (string)
 - regionName (string)
 - countryCode (string)
-- continent (string)
-- continentCode (string)
 - Any other key-value pairs
 
 ## Input Reference
@@ -58,8 +56,6 @@ The `inputData` object can contain the following properties, used to generate ge
 - `country` (string): Name of the country. No default value.
 - `regionName` (string): Name of the region or state. No default value.
 - `countryCode` (string): ISO country code, typically alpha-2 format. No default value.
-- `continent` (string): Name of the continent. No default value.
-- `continentCode` (string): Code representing the continent. No default value.
 - Other properties (any): Additionally, key value pairs will be ignored but do not throw an error.
 
 ## Options Reference
@@ -84,8 +80,6 @@ Please note: that these will only have an effect on the output if the input for 
 - `city` (boolean): Include a tag for the city. Default: `true`.
 - `country` (boolean): Include a tag for the country. Default: `true`.
 - `region` (boolean): Include a tag for the region. Default:`true`.
-- `continent` (boolean): Include a tag for the continent. Default: `false`.
-- `continentCode` (boolean): Include a tag for the continent code. Default: `true`.
 - `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
 
 
@@ -124,12 +118,6 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 6. **City**: `[ 'g', 'Budapest', 'cityName' ]`
    - A passthrough from the input city name.
 
-7. **Continent**: `[ 'g', 'Europe', 'continentName' ]`
-   - A passthrough from the input continent name.
-
-8. **Continent Code**: `[ 'g', 'EU', 'continentCode' ]`
-   - A passthrough from the input continent code.
-
 9. **Planet**: `[ 'g', 'Earth', 'planetName' ]`
    - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
 
@@ -153,7 +141,7 @@ Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the ch
 
 ## Example Response
 
-Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, `continentCode`, `continent` **and** `planet` are provided, with everything else default
+Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, **and** `planet` are provided, with everything else default
 ```
 [
   [ 'g', 'u2mwdd8q4' ],
@@ -211,10 +199,6 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'HU-BU', 'ISO-3166-2' ],
   [ 'G', 'cityName' ],
   [ 'g', 'Budapest', 'cityName' ],
-  [ 'G', 'continentName' ],
-  [ 'g', 'Europe', 'continentName' ],
-  [ 'G', 'UN M49' ],
-  [ 'g', 'EU', 'UN M49' ],
   [ 'G', 'planetName' ],
   [ 'g', 'Earth', 'planetName' ]
 ]
