@@ -45,6 +45,9 @@ jobs:
       - name: Change branch
         run: git fetch --all && git checkout gh-pages
 
+      - name: Reset Branch
+        run: rm -rf *
+
       - name: Restore Docs
         uses: actions/cache/restore@v3
         id: cache-restore
@@ -55,6 +58,9 @@ jobs:
 
       - name: Configure and Commit
         run: | 
+          mv docs/* ./
+          rm -rf docs 
+          git add *
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -am "Update Docs @${{ hashFiles('docs') }}"
