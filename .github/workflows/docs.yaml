@@ -64,10 +64,11 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -am "Update Docs @${{ hashFiles('docs') }}"
-          
+
       - name: Push
         run: |
-          git push https://${{ secrets.DOCS_DEPLOY_TOKEN }}@${{ github.server_url }}/${{ github.repository }}/gh-pages
+          git push https://${{ secrets.DOCS_DEPLOY_TOKEN }}@${{ github.repository }} gh-pages
+
 
       # - name: Push
       #   uses: ad-m/github-push-action@master
