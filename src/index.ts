@@ -8,8 +8,8 @@ export interface InputData {
     countryName?: string;
     regionName?: string;
     countryCode?: string;
-    continentName?: string;
-    continentCode?: string;
+    // continentName?: string;
+    // continentCode?: string;
     planetName?: string;
     [key: string]: any;
 }
@@ -35,9 +35,9 @@ export interface Options {
     region?: boolean,
     regionName?: boolean | null,
     regionCode?: boolean | null,
-    continent?: boolean,
-    continentName?: boolean | null,
-    continentCode?: boolean | null,
+    // continent?: boolean,
+    // continentName?: boolean | null,
+    // continentCode?: boolean | null,
     planet?: boolean,
     planetName?: boolean | null,
 }
@@ -146,7 +146,7 @@ export const iso31663Namespace = (opts: Options): string  => opts.isoAsNamespace
  *
  * This function processes the input data and generates a series of tags based on the options.
  * It handles various types of data such as GPS coordinates, ISO-3166 country and region codes,
- * city, continent, and continentName: names. The generated tags are deduplicated by default, can be changed
+ * city. The generated tags are deduplicated by default, can be changed
  * with dedupe option. 
  */
 const generateTags = (input: InputData, opts: Options): GeoTags[] => {
@@ -260,16 +260,16 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         tags.push(['g', input.cityName, 'cityName']);
     }
 
-    if ((opts.continent || opts.continentName) && input.continentName) {
-        tags.push(['G', 'continentName']);
-        tags.push(['g', input.continentName, 'continentName']);
-    }
+    // if ((opts.continent || opts.continentName) && input.continentName) {
+    //     tags.push(['G', 'continentName']);
+    //     tags.push(['g', input.continentName, 'continentName']);
+    // }
 
-    if ((opts.continent || opts.continentCode) && input.continentCode) {
-        const namespace = opts.unM49AsNamespace ? 'UN M49' : 'continentCode';
-        tags.push(['G', namespace]);
-        tags.push(['g', input.continentCode, namespace]);
-    }
+    // if ((opts.continent || opts.continentCode) && input.continentCode) {
+    //     const namespace = opts.unM49AsNamespace ? 'UN M49' : 'continentCode';
+    //     tags.push(['G', namespace]);
+    //     tags.push(['g', input.continentCode, namespace]);
+    // }
 
     if ((opts.planet || opts.planetName) && input.planetName) {
         tags.push(['G', 'planetName']);
@@ -366,7 +366,7 @@ export function filterNonStringTags(tags: GeoTags[]): GeoTags[] {
  * This function is the primary entry point for generating an array of nostr `g` (geo) tag arrays. 
  * It validates the input data, applies default options if not provided, and invokes the tag generation process.
  * The options can control the inclusion of various geotags like GPS, ISO-3166 country codes,
- * city names, continent details, etc. The function can also deduplicate and sort the tags.
+ * city names, etc. The function can also deduplicate and sort the tags.
  *
  * If the input data is null, an error is thrown. The input must be an object.
  */
@@ -379,7 +379,7 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
         dedupe: true,
         sort: false,
 
-        isoAsNamespace: true,
+        isoAsNamespace: false,
         unM49AsNamespace: true,
 
         iso31661: true,
@@ -400,9 +400,9 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
         regionName: null,
         regionCode: null,
 
-        continent: true,
-        continentName: null, 
-        continentCode: null,
+        // continent: true,
+        // continentName: null, 
+        // continentCode: null,
 
         planet: false,
         planetName: null,
