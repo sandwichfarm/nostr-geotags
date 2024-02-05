@@ -175,11 +175,11 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
     // Geohash
     if (opts.geohash && (input.lat && input.lon) || input.geohash) {
-      let fullGeohash
+      let fullGeohash = ''
       if(input.lat && input.lon) {
         fullGeohash = ngeohash.encode(input.lat, input.lon);
       }
-      else {
+      else if(input?.geohash) {
         fullGeohash = input.geohash
       }
       if(fullGeohash && fullGeohash.length > 0 && opts.legacy === false) {
