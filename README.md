@@ -3,9 +3,11 @@
 > ATTENTION: Use at your own risk, this is not a widely accepted standard, and there are chances a proposed standard will differ greatly or slightly from this pattern. [Find YAGT NIP here](https://github.com/nostr-protocol/nips/pull/952)
 
 [![semver](https://img.shields.io/npm/v/nostr-geotags)](https://github.com/sandwichfarm/nostr-geotags/releases/latest) 
-[![Test](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml) 
-[![publish](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml) 
 [![cov](https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg)](https://github.com/sandwichfarm/nostr-geotags/actions)
+[![test](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml) 
+[![publish](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml) 
+[![docs](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/docs.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/docs.yaml) 
+[![covgen](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml) 
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/nostr-geotags)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/nostr-geotags)
 
