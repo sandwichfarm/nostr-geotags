@@ -187,9 +187,9 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31661Namespace(opts)
         const iso31661Tags: LabelTag[] = [];
         if (countryData) {
-            iso31661Tags.push(['g', countryData.alpha2, namespace, 'alpha-2']);
-            iso31661Tags.push(['g', countryData.alpha3, namespace, 'alpha-3']);
-            iso31661Tags.push(['g', countryData.numeric, namespace, 'numeric']);
+            iso31661Tags.push(['g', countryData.alpha2, namespace]);
+            iso31661Tags.push(['g', countryData.alpha3, namespace]);
+            iso31661Tags.push(['g', countryData.numeric, namespace]);
             if(countryData.name) {
                 iso31661Tags.push(['G', 'countryName']);
                 iso31661Tags.push(['g', countryData.name, 'countryName']);
@@ -227,18 +227,11 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
 
                 const originalValue = countryData[type as keyof ISO31661Entry];
                 const updatedValues = getUpdatedIso31663Values(type, originalValue);
-
-                const typeMap = {
-                    alpha2: 'alpha-2',
-                    alpha3: 'alpha-3',
-                    numeric: 'numeric',
-                    name: 'name'
-                }
     
                 // Add updated values if they are different from the original
                 updatedValues.forEach(updatedValue => {
                     if ( (originalValue !== updatedValue && type !== 'name'))
-                        iso31663Tags.push(['g', updatedValue, namespace, typeMap[type] ]);
+                        iso31663Tags.push(['g', updatedValue, namespace]);
                 });
             });
     

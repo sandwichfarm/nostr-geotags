@@ -68,9 +68,9 @@ describe('generateTags()', () => {
             [ 'g', 'u2' ],
             [ 'g', 'u' ],
             [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode' ],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ],
             [ 'G', 'regionCode' ],
@@ -230,9 +230,9 @@ describe('generateTags()', () => {
             [ 'g', '47, 19', 'dd' ],
             [ 'g', '47', 'lat' ],
             [ 'g', '19', 'lon' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode' ],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ],
             [ 'g', 'Hungary', 'countryName' ],
             [ 'g', 'HU-BU', 'regionCode' ]
           ])
@@ -255,9 +255,9 @@ describe('generateTags()', () => {
             [ 'G', 'lon' ],
             [ 'g', '19', 'lon' ],
             [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode'],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ],
             [ 'G', 'regionCode' ],
@@ -405,9 +405,9 @@ describe('generateTags()', () => {
         console.log('iso31661', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode'],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
         ]));
@@ -458,15 +458,16 @@ describe('generateTags()', () => {
         console.log('iso31663', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'G', 'countryCode' ],
-            [ 'g', 'AI', 'countryCode', 'alpha-2' ],
-            [ 'g', 'AIA', 'countryCode', 'alpha-3' ],
-            [ 'g', '660', 'countryCode', 'numeric' ],
+            [ 'g', 'AI', 'countryCode'],
+            [ 'g', 'AIA', 'countryCode' ],
+            [ 'g', '660', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Anguilla', 'countryName' ],
             [ 'G', 'countryCode' ],
-            [ 'g', 'DJ', 'countryCode', 'alpha-2' ]
-          ]));
-    });
+            [ 'g', 'DJ', 'countryCode' ]
+        ]
+      ));
+    })
 
     it('should handle ISO-3166-3 correctly with pessimistic input', () => {
         const input: InputData = {
@@ -485,9 +486,9 @@ describe('generateTags()', () => {
         console.log('iso-3166-3 no changes:', result)
         expect(result).toEqual(expect.arrayContaining([
             ['G', 'countryCode'],
-            [ 'g', 'DE', 'countryCode', 'alpha-2' ],
-            [ 'g', 'DEU', 'countryCode', 'alpha-3' ],
-            [ 'g', '276', 'countryCode', 'numeric' ],
+            [ 'g', 'DE', 'countryCode' ],
+            [ 'g', 'DEU', 'countryCode' ],
+            [ 'g', '276', 'countryCode' ],
         ]))
     });
 
@@ -535,9 +536,9 @@ describe('generateTags()', () => {
         console.log('country and countryCode are false', result)
         expect(result).toEqual(expect.not.arrayContaining([
             ['G', 'countryCode'],    
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode' ],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
         ]))
@@ -624,9 +625,9 @@ describe('namespace inflection', () => {
         console.log('isoAsNamespace is false', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ],
+            [ 'g', 'HU', 'countryCode' ],
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode'],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
           ]));
@@ -702,10 +703,10 @@ describe('sortTagsByKey()', () => {
 
     it('should sort tags', () => {
         const tags: GeoTags[] = [
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
+            [ 'g', 'HU', 'countryCode'],
             [ 'G', 'countryCode' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ]
+            [ 'g', 'HUN', 'countryCode' ],
+            [ 'g', '348', 'countryCode' ]
           ];
 
         console.log('before sort', tags)
@@ -714,9 +715,9 @@ describe('sortTagsByKey()', () => {
         console.log('after sort', result)
         expect(result).toEqual([
             [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-            [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-            [ 'g', '348', 'countryCode', 'numeric' ]
+            [ 'g', 'HU', 'countryCode' ],
+            [ 'g', 'HUN', 'countryCode'],
+            [ 'g', '348', 'countryCode' ]
           ]);
     });
 })
@@ -724,9 +725,9 @@ describe('sortTagsByKey()', () => {
 describe('filterOutType()', () => {
     it('should filter out tags by type', () => {
         const tags: GeoTags[] = [
-            ['g', 'HU', 'countryCode', 'alpha-2'],
-            ['g', 'HUN', 'countryCode', 'alpha-3'],
-            ['g', '348', 'countryCode', 'numeric'],
+            ['g', 'HU', 'countryCode'],
+            ['g', 'HUN', 'countryCode'],
+            ['g', '348', 'countryCode'],
             ['g', 'HU-BU', 'regionCode']
         ];
 
