@@ -1,7 +1,8 @@
-import ngeohash from 'ngeohash';
+import ngeohash, { GeographicPoint } from 'ngeohash';
 import { iso31661, iso31662, iso31663, ISO31661AssignedEntry, ISO31662Entry, ISO31661Entry  } from 'iso-3166';
 
 export interface InputData {
+    geohash?: string,
     lat?: number;
     lon?: number;
     cityName?: string;
@@ -13,11 +14,12 @@ export interface InputData {
 }
 
 export interface Options {
-    dedupe?: boolean;
     sort?: boolean;
 
     isoAsNamespace?: boolean;  
     unM49AsNamespace?: boolean;
+
+    ddMaxResolution?: number;
 
     iso31661?: boolean,
     iso31662?: boolean, 
@@ -99,6 +101,8 @@ export type LabelTag = LabelNamespace | Label;
 */
 export type GeoTags = Geohash | LabelTag;
 
+const DD_MAX_RES_DEFAULT = 9
+
 /**
  * Retrieves updated ISO-3166-3 values based on a given code.
  *
@@ -131,6 +135,26 @@ export const iso31662Namespace = (opts: Options): string  => opts.isoAsNamespace
 
 export const iso31663Namespace = (opts: Options): string  => opts.isoAsNamespace ? 'ISO-3166-3' : 'countryCode';
 
+/**
+ * Truncates a number (float) to a specified precision. Generally used for dd (lat and lon) values.
+ *
+ * @param {number} num - The float to be shortened.
+ * @param {number} resolution - How many decimal places.
+ * @returns {GeoTags[]} An array of generated geo tags.
+ *
+ * This function shortens a lat or lon to a specified precision (number of decimal places.)
+ * Does nothing if whole number.
+ */
+const truncateToResolution = (num: number, resolution: number): number => {
+  const multiplier = Math.pow(10, resolution);
+  return Math.floor(num * multiplier) / multiplier;
+};
+
+
+export const calculateResolution = (input: number, max: number | undefined): number => {
+  if(!max) max = DD_MAX_RES_DEFAULT
+  return input % 1 === 0 ? 1 : Math.min(input.toString().split('.')?.[1]?.length, max);
+}
 
 /**
  * Generates an array of `g` tags based on the input data and options provided.
@@ -141,24 +165,24 @@ export const iso31663Namespace = (opts: Options): string  => opts.isoAsNamespace
  *
  * This function processes the input data and generates a series of tags based on the options.
  * It handles various types of data such as GPS coordinates, ISO-3166 country and region codes,
- * city. The generated tags are deduplicated by default, can be changed
- * with dedupe option. 
+ * city.
  */
 const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     const tags: GeoTags[] = [];
 
      // GPS
-     if (opts.gps && input.lat && input.lon) {
+     if(opts?.gps && input.geohash && (!input?.lat || !input?.lon)) {
+      const dd = ngeohash.decode(input.geohash)
+      console.log('wtf', dd)
+      input.lat = dd.latitude
+      input.lon = dd.longitude
+    }
+     if (opts?.gps && input.lat && input.lon) {
         tags.push(['G', `dd`]);
         tags.push(['g', `${input.lat}, ${input.lon}`, 'dd']);
-        
-        const maxResolution = 10;
-        const truncateToResolution = (num: number, resolution: number): number => {
-            const multiplier = Math.pow(10, resolution);
-            return Math.floor(num * multiplier) / multiplier;
-        };
-        const latResolution = input.lat % 1 === 0 ? 1 : Math.min(input.lat.toString().split('.')[1].length, maxResolution);
-        const lonResolution = input.lon % 1 === 0 ? 1 : Math.min(input.lon.toString().split('.')[1].length, maxResolution);
+
+        const latResolution = calculateResolution(input.lat, opts.ddMaxResolution);
+        const lonResolution = calculateResolution(input.lon, opts.ddMaxResolution);
 
         tags.push(['G', `lat`]);
         for (let i = latResolution; i > 0; i--) {
@@ -263,7 +287,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31662Namespace(opts)
         result = filterOutType(result, namespace);
     }
-    // result = opts?.dedupe === true? dedupe(result): result;
     result = opts?.sort === true? sortTagsByKey(result): result;
     result = sanitize(result)
     return result
@@ -365,11 +388,12 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
     if (!(input instanceof Object) || Array.isArray(input) || typeof input!== 'object' || typeof input=== 'function' )
         throw new Error('Input must be an object');
     opts = {
-        dedupe: true,
         sort: false,
 
         isoAsNamespace: false,
         unM49AsNamespace: true,
+
+        ddMaxResolution: DD_MAX_RES_DEFAULT,
 
         iso31661: true,
         iso31662: false, 

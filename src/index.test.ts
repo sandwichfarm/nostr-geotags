@@ -1,7 +1,7 @@
 
 
 import { describe, it, expect, vi} from 'vitest';
-import ngeotags, { InputData, Option, filterNonStringTags, generateCountryTagKey, sortTagsByKey, GeoTags, filterOutType, iso31661Namespace, iso31662Namespace, iso31663Namespace  } from './index'; // Adjust the import path as needed
+import ngeotags, { calculateResolution, InputData, Option, filterNonStringTags, generateCountryTagKey, sortTagsByKey, GeoTags, filterOutType, iso31661Namespace, iso31662Namespace, iso31663Namespace  } from './index'; // Adjust the import path as needed
 
 describe('generateTags()', () => {
 
@@ -298,7 +298,7 @@ describe('generateTags()', () => {
         ]));
     });
 
-    const maxResolution = 10; // This should match the value used in your function
+    const maxResolution = 9; // This should match the value used in your function
 
     it('handles maximum decimal length', () => {
         const input = { lat: 47.12345678901, lon: 19.12345678901 };
@@ -386,7 +386,6 @@ describe('generateTags()', () => {
 
     it('should handle geohash correctly', () => {
         const input: InputData = {
-            geohash: true,
             lat: 47.5636,
             lon: 19.0947
         };
@@ -394,6 +393,41 @@ describe('generateTags()', () => {
         const result = ngeotags(input, { geohash: true });
         expect(result.some(tag => tag[0] === 'g')).toBeTruthy();
     });
+
+
+    it('should decode geohash when geohash passed via input, either lat or lon are null, and gps is enabled', () => {
+      const input: InputData = {
+          geohash: 'u2mwdd8q4'
+      };
+
+      const result = ngeotags(input, { gps: true });
+      console.log('hash', result)
+      expect(result.some(tag => tag[0] === 'g')).toBeTruthy();
+    });
+
+    it('should inherit default resolution when one is not set', () => {
+      var result = calculateResolution(12.3456789876545345455, undefined)
+      expect(result).toBe(9)
+    })
+
+    it('should ignore geohash when geohash passed via input, both lat and long are set (number) and gps is enabled', () => {
+      const input: InputData = {
+          geohash: 'h9xhn7y',
+          lat: 47.56361246109009,
+          lon: 19.094688892364502
+      };
+
+      const result = ngeotags(input, { gps: true });
+      console.log('hash and dd passed', result)
+      expect(result.some(tag => tag[0] === 'g')).toBeTruthy();
+      expect(result).toEqual(expect.arrayContaining([
+        [ 'g', '47.5636', 'lat' ],
+        [ 'g', '19.0946', 'lon' ],
+    ]));
+  });
+
+
+    
 
     it('should handle ISO-3166-1 correctly with optimistic input', () => {
         const input: InputData = {

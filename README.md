@@ -55,11 +55,13 @@ The `inputData` object can contain the following properties, used to generate ge
 
 - `lat` (number): Latitude coordinate. No default value.
 - `lon` (number): Longitude coordinate. No default value.
+- `geohash` (string): Geohash coordinate. No default value. Will be ignored if lat & lon are also passed as input as they take precedence.
 - `city` (string): Name of the city. No default value.
 - `country` (string): Name of the country. No default value.
 - `regionName` (string): Name of the region or state. No default value.
 - `countryCode` (string): `ISO-3166-1:alpha-2` country code. No default value.
 - Other properties (any): Additionally, key value pairs will be ignored but do not throw an error.
+- `planetName` (string): Name of a planet.
 
 ## Options Reference
 The `options` object specifies which types of tags to generate. 
@@ -77,10 +79,16 @@ The `options` object specifies which types of tags to generate.
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
 
 - `geohash` (boolean): Includes geohash codes from `ngeohash`, with diminishing resolution, based on latitude and longitude. Default: `true`.
-- `city` (boolean): Include a tag for the city. Default: `true`.
-- `country` (boolean): Include a tag for the country. Default: `true`.
-- `region` (boolean): Include a tag for the region. Default:`true`.
+- `city` or `cityName` (boolean): Include a tag for the city in response **if available**. Default: `true`.
+- `country` (boolean): Include a tag for the `countryCode` and `countryName` in response **if available**. Default: `true`.
+- `countryCode` (boolean): Include a tag for the `countryCode` in response **if available**. Default: `true`.
+- `countryName` (boolean): Include a tag for the `countryName` in response **if available**. Default: `true`.
+- `region` (boolean): Include a tag for the `regionCode` and `regionName` in response **if available**. Default:`true`.
+- `regionCode` (boolean): Include a tag for the `regionCode` in response **if available**. Default:`true`.
+- `regionName` (boolean): Include a tag for the `regionName` in response **if available**. Default:`true`.
 - `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
+- `planet` or `planetName` (boolean): Include a tag for the `planetName` in response **if available**. Default: `false`.
+
 
 
 ## Response Reference
@@ -104,11 +112,11 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 3. **ISO-3166-1 Codes**: 
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.
    - Examples 
-    - (`isoAsNamespace==false [default]`)
+    - **`isoAsNamespace==false [default]`**
       - Alpha-2 code: `[ 'g', 'HU', 'countryCode' ]`
       - Alpha-3 code: `[ 'g', 'HUN', 'countryCode']`
       - Numeric code: `[ 'g', '348', 'countryCode' ]`
-    - (`isoAsNamespace==true`)
+    - **`isoAsNamespace==true`**
       - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1' ]`
       - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1']`
       - Numeric code: `[ 'g', '348', 'ISO-3166-1' ]`
