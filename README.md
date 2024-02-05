@@ -58,7 +58,7 @@ The `inputData` object can contain the following properties, used to generate ge
 - `city` (string): Name of the city. No default value.
 - `country` (string): Name of the country. No default value.
 - `regionName` (string): Name of the region or state. No default value.
-- `countryCode` (string): ISO country code, typically alpha-2 format. No default value.
+- `countryCode` (string): `ISO-3166-1:alpha-2` country code. No default value.
 - Other properties (any): Additionally, key value pairs will be ignored but do not throw an error.
 
 ## Options Reference
@@ -68,22 +68,19 @@ The `options` object specifies which types of tags to generate.
 ### ISO options
 - `iso31661` (boolean): Generate ISO 3166-1 tags. Default: `true`.
 - `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
-- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `false`. See `ISO-3166-3 Behaviors`  
+- `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `true`. See `ISO-3166-3 Behaviors`  
 
 ### Transform options
-- `dedupe` (boolean): Dedupe results with preference for ISO values. Newer ISO revisions take precedence. 
 - `isoAsNamespace` (boolean): Use ISO standand (ex: `ISO-3166-1`)  as the namespace for tags. If false will use `countryCode` and `regionCode` instead of `ISO-3166-1/3` and `iso-3166-2` respectively. Default: `false`.
-- `unM49AsNamespace` (boolean): Use `UN M49` as the namespace for tags. Default: `true`.
 
 ### Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
 
-- `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
 - `geohash` (boolean): Includes geohash codes from `ngeohash`, with diminishing resolution, based on latitude and longitude. Default: `true`.
 - `city` (boolean): Include a tag for the city. Default: `true`.
 - `country` (boolean): Include a tag for the country. Default: `true`.
 - `region` (boolean): Include a tag for the region. Default:`true`.
-- `planet` (boolean): Include a tag for the planet (Earth by default). Default: `false`.
+- `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
 
 
 ## Response Reference
@@ -106,10 +103,15 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 
 3. **ISO-3166-1 Codes**: 
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.
-   - Examples: 
-     - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1||countryCode', 'alpha2' ]`
-     - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1||countryCode', 'alpha3' ]`
-     - Numeric code: `[ 'g', '348', 'ISO-3166-1||countryCode', 'numeric' ]`
+   - Examples 
+    - (`isoAsNamespace==false [default]`)
+      - Alpha-2 code: `[ 'g', 'HU', 'countryCode' ]`
+      - Alpha-3 code: `[ 'g', 'HUN', 'countryCode']`
+      - Numeric code: `[ 'g', '348', 'countryCode' ]`
+    - (`isoAsNamespace==true`)
+      - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1' ]`
+      - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1']`
+      - Numeric code: `[ 'g', '348', 'ISO-3166-1' ]`
 
 4. **ISO-3166-2 Codes**: 
    - These tags represent region information derived from the `iso-3166` library and are based on the `countryCode` and `regionCode` input values. They are not passthrough values. 
@@ -129,12 +131,12 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counterpart, will be appended to the tags array. Here's an example:
 
 [
-  [ 'G', 'ISO-3166-1||countryCode' ],
-  [ 'g', 'AI', 'ISO-3166-1||countryCode', 'alpha-2' ],
-  [ 'g', 'AIA', 'ISO-3166-1||countryCode', 'alpha-3' ],
-  [ 'g', '660', 'ISO-3166-1||countryCode', 'numeric' ],
-  [ 'G', 'ISO-3166-3||countryCode' ],
-  [ 'g', 'DJ', 'ISO-3166-3||countryCode', 'alpha-2' ],
+  [ 'G', 'countryCode' ],
+  [ 'g', 'AI', 'countryCode'],
+  [ 'g', 'AIA', 'countryCode' ],
+  [ 'g', '660', 'countryCode'],
+  [ 'G', 'countryCode' ],
+  [ 'g', 'DJ', 'countryCode' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Anguilla', 'countryName' ]
 ]
@@ -157,9 +159,9 @@ Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, **a
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
   [ 'G', 'countryCode' ],
-  [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-  [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-  [ 'g', '348', 'ISO-3166-1', 'numeric' ],
+  [ 'g', 'HU', 'countryCode' ],
+  [ 'g', 'HUN', 'countryCode' ],
+  [ 'g', '348', 'ISO-3166-1' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Hungary', 'countryName' ],
   [ 'G', 'cityName' ],
@@ -193,13 +195,13 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'g', 'u2' ],
   [ 'g', 'u' ],
   [ 'G', 'countryCode' ],
-  [ 'g', 'HU', 'countryCode', 'alpha-2' ],
-  [ 'g', 'HUN', 'countryCode', 'alpha-3' ],
-  [ 'g', '348', 'countryCode', 'numeric' ],
+  [ 'g', 'HU', 'countryCode' ],
+  [ 'g', 'HUN', 'countryCode' ],
+  [ 'g', '348', 'countryCode' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Hungary', 'countryName' ],
-  [ 'G', 'ISO-3166-2' ],
-  [ 'g', 'HU-BU', 'ISO-3166-2' ],
+  [ 'G', 'regionCode' ],
+  [ 'g', 'HU-BU', 'regionCode' ],
   [ 'G', 'cityName' ],
   [ 'g', 'Budapest', 'cityName' ],
   [ 'G', 'planetName' ],
