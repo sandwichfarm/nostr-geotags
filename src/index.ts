@@ -189,7 +189,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
           const partialGeohash = fullGeohash.substring(0, i);
           const tag: Geohash = ['g', partialGeohash ]
           if(!opts.legacy) tag.push('geohash')
-          console.log('wtf', 'tag length', tag.length)
           tags.push(tag);
       }
     }
@@ -198,7 +197,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
       // GPS
       if(opts?.gps && input.geohash && (!input?.lat || !input?.lon)) {
         const dd = ngeohash.decode(input.geohash)
-        console.log('wtf', dd)
         input.lat = dd.latitude
         input.lon = dd.longitude
       }
