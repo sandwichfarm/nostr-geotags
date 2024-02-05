@@ -77,7 +77,6 @@ The `options` object specifies which types of tags to generate.
 
 ### Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
-
 - `geohash` (boolean): Includes geohash codes from `ngeohash`, with diminishing resolution, based on latitude and longitude. Default: `true`.
 - `city` or `cityName` (boolean): Include a tag for the city in response **if available**. Default: `true`.
 - `country` (boolean): Include a tag for the `countryCode` and `countryName` in response **if available**. Default: `true`.
@@ -89,7 +88,8 @@ Please note: that these will only have an effect on the output if the input for 
 - `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
 - `planet` or `planetName` (boolean): Include a tag for the `planetName` in response **if available**. Default: `false`.
 
-
+### Compatibility Options
+- `legacy` (boolean) Will only return legacy `g` tags, for example: `["g", "u2mwdd"]`
 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.

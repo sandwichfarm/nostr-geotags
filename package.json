@@ -22,7 +22,7 @@
     "transform"
   ],
   "dependencies": {
-    "iso-3166": "4.3.0",
+    "iso-3166": "4.3.1",
     "ngeohash": "0.6.3"
   },
   "scripts": {
