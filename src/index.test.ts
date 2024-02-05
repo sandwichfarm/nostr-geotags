@@ -31,7 +31,6 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            //dedupe: true,
             sort: false,
             iso31661: true,
             iso31662: true,
@@ -46,46 +45,46 @@ describe('generateTags()', () => {
         const result = ngeotags(input, options);
         console.log('all defaults', result)
         expect(result).toEqual(expect.arrayContaining([
-            [ 'G', 'dd' ],
-            [ 'g', '47.5636, 19.0947', 'dd' ],
-            [ 'G', 'lat' ],
-            [ 'g', '47.5636', 'lat' ],
-            [ 'g', '47.563', 'lat' ],
-            [ 'g', '47.56', 'lat' ],
-            [ 'g', '47.5', 'lat' ],
-            [ 'G', 'lon' ],
-            [ 'g', '19.0947', 'lon' ],
-            [ 'g', '19.094', 'lon' ],
-            [ 'g', '19.09', 'lon' ],
-            [ 'g', '19', 'lon' ],
-            [ 'g', 'u2mwdd8q4' ],
-            [ 'g', 'u2mwdd8q' ],
-            [ 'g', 'u2mwdd8' ],
-            [ 'g', 'u2mwdd' ],
-            [ 'g', 'u2mwd' ],
-            [ 'g', 'u2mw' ],
-            [ 'g', 'u2m' ],
-            [ 'g', 'u2' ],
-            [ 'g', 'u' ],
-            [ 'G', 'countryCode' ],
-            [ 'g', 'HU', 'countryCode' ],
-            [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ],
-            [ 'G', 'countryName' ],
-            [ 'g', 'Hungary', 'countryName' ],
-            [ 'G', 'regionCode' ],
-            [ 'g', 'HU-BU', 'regionCode' ],
-            [ 'G', 'cityName' ],
-            [ 'g', 'Budapest', 'cityName' ],
-            [ 'G', 'planetName' ],
-            [ 'g', 'Earth', 'planetName' ]
-          ]));
+          [ 'G', 'dd' ],
+          [ 'g', '47.5636, 19.0947', 'dd' ],
+          [ 'G', 'lat' ],
+          [ 'g', '47.5636', 'lat' ],
+          [ 'g', '47.563', 'lat' ],
+          [ 'g', '47.56', 'lat' ],
+          [ 'g', '47.5', 'lat' ],
+          [ 'G', 'lon' ],
+          [ 'g', '19.0947', 'lon' ],
+          [ 'g', '19.094', 'lon' ],
+          [ 'g', '19.09', 'lon' ],
+          [ 'g', '19', 'lon' ],
+          [ 'G', 'geohash' ],
+          [ 'g', 'u2mwdd8q4', 'geohash' ],
+          [ 'g', 'u2mwdd8q', 'geohash' ],
+          [ 'g', 'u2mwdd8', 'geohash' ],
+          [ 'g', 'u2mwdd', 'geohash' ],
+          [ 'g', 'u2mwd', 'geohash' ],
+          [ 'g', 'u2mw', 'geohash' ],
+          [ 'g', 'u2m', 'geohash' ],
+          [ 'g', 'u2', 'geohash' ],
+          [ 'g', 'u', 'geohash' ],
+          [ 'G', 'countryCode' ],
+          [ 'g', 'HU', 'countryCode' ],
+          [ 'g', 'HUN', 'countryCode' ],
+          [ 'g', '348', 'countryCode' ],
+          [ 'G', 'countryName' ],
+          [ 'g', 'Hungary', 'countryName' ],
+          [ 'G', 'regionCode' ],
+          [ 'g', 'HU-BU', 'regionCode' ],
+          [ 'G', 'cityName' ],
+          [ 'g', 'Budapest', 'cityName' ],
+          [ 'G', 'planetName' ],
+          [ 'g', 'Earth', 'planetName' ]
+        ]));
     });
 
 
     it('null options should produce correct output', () => {
         const input: InputData = {
-            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
@@ -98,7 +97,6 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            //dedupe: true,
             iso31661: true,
             iso31662: true,
             iso31663: true,
@@ -131,7 +129,6 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly with all high specificity options enabled', () => {
         const input: InputData = {
-            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',
@@ -144,7 +141,6 @@ describe('generateTags()', () => {
         };
 
         const options: Options = {
-            //dedupe: true,
             iso31661: true,
             iso31662: true,
             iso31663: true,
@@ -172,12 +168,30 @@ describe('generateTags()', () => {
 
         const result = ngeotags(input, options);
         console.log('all high specificity', result.length, result) 
-        expect(result).toHaveLength(33);
+        expect(result).toHaveLength(34);
+    })
+
+    it('should generate legacy tags when opts.legacy is true', () => {
+      const input: InputData = {
+        countryCode: 'HU',
+        regionName: 'Budapest',
+        geohash: 'u2mwdd8q4'
+      };
+
+      const options: Options = {
+        legacy: true
+      }
+
+      const result = ngeotags(input, options);
+        console.log('legacy', result.length, result) 
+        expect(result).toEqual(expect.arrayContaining([
+          ['g', 'u2mwdd8q4']
+        ]))
+        // expect(result).toHaveLength(34);
     })
 
     it('should generate tags correctly when ISO-3166-1 generated properties are disabled in response', () => {
         const input: InputData = {
-            //dedupe: true,
             countryCode: 'HU',
             regionName: 'Budapest'
         };
@@ -194,7 +208,6 @@ describe('generateTags()', () => {
 
     it('should generate tags correctly with default options', () => {
         const input: InputData = {
-            //dedupe: true,
             lat: 47.5636,
             lon: 19.0947,
             cityName: 'Budapest',

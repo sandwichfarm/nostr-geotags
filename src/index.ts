@@ -25,6 +25,8 @@ export interface Options {
     iso31662?: boolean, 
     iso31663?: boolean, 
 
+    legacy?: boolean,
+
     geohash?: boolean,
     gps?: boolean,
     city?: boolean,
@@ -51,7 +53,7 @@ export type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
  * - Second element (string): The Geohash
  *  
 */
-export type Geohash = [string, string];
+export type Geohash = [string, string] | [string, string, string];
 
 /**
  * Represents a nostr event `L` (label) tag with a length of 2
@@ -76,7 +78,7 @@ export type LabelNamespace = [ string, string ]
  * - Second element (string): The namespace
  *  
 */
-export type Label = [ string, string, string ] | [ string, string, string, string ]
+export type Label = [ string, string, string ]
 
 /**
  * Represents a union of LabelNamespace and Label
@@ -169,116 +171,131 @@ export const calculateResolution = (input: number, max: number | undefined): num
  */
 const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     const tags: GeoTags[] = [];
-
-     // GPS
-     if(opts?.gps && input.geohash && (!input?.lat || !input?.lon)) {
-      const dd = ngeohash.decode(input.geohash)
-      console.log('wtf', dd)
-      input.lat = dd.latitude
-      input.lon = dd.longitude
-    }
-     if (opts?.gps && input.lat && input.lon) {
-        tags.push(['G', `dd`]);
-        tags.push(['g', `${input.lat}, ${input.lon}`, 'dd']);
-
-        const latResolution = calculateResolution(input.lat, opts.ddMaxResolution);
-        const lonResolution = calculateResolution(input.lon, opts.ddMaxResolution);
-
-        tags.push(['G', `lat`]);
-        for (let i = latResolution; i > 0; i--) {
-            const truncatedLat = truncateToResolution(input.lat, i);
-            tags.push(['g', truncatedLat.toString(), 'lat']);
-        }
-
-        tags.push(['G', `lon`]);
-        for (let i = lonResolution; i > 0; i--) {
-            const truncatedLon = truncateToResolution(input.lon, i);
-            tags.push(['g', truncatedLon.toString(), 'lon']);
-        }
-    }
+    let result
 
     // Geohash
-    if (opts.geohash && input.lat && input.lon) {
-        const fullGeohash = ngeohash.encode(input.lat, input.lon);
-        if(fullGeohash.length > 0) tags.push(['G', 'geohash' ]);
-        for (let i = fullGeohash.length; i > 0; i--) {
-            const partialGeohash = fullGeohash.substring(0, i);
-            tags.push(['g', partialGeohash, 'geohash' ]);
-        }
+    if (opts.geohash && (input.lat && input.lon) || input.geohash) {
+      let fullGeohash
+      if(input.lat && input.lon) {
+        fullGeohash = ngeohash.encode(input.lat, input.lon);
+      }
+      else {
+        fullGeohash = input.geohash
+      }
+      if(fullGeohash && fullGeohash.length > 0 && opts.legacy === false) {
+        tags.push(['G', 'geohash' ]);
+      }
+      for (let i = fullGeohash.length; i > 0; i--) {
+          const partialGeohash = fullGeohash.substring(0, i);
+          const tag: Geohash = ['g', partialGeohash ]
+          if(!opts.legacy) tag.push('geohash')
+          console.log('wtf', 'tag length', tag.length)
+          tags.push(tag);
+      }
     }
-
-    if (opts.iso31661 && input.countryCode) {
-        const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
-        const namespace = iso31661Namespace(opts)
-        const iso31661Tags: LabelTag[] = [];
-        if (countryData) {
-            iso31661Tags.push(['g', countryData.alpha2, namespace]);
-            iso31661Tags.push(['g', countryData.alpha3, namespace]);
-            iso31661Tags.push(['g', countryData.numeric, namespace]);
-            if(countryData.name) {
-                iso31661Tags.push(['G', 'countryName']);
-                iso31661Tags.push(['g', countryData.name, 'countryName']);
-            }
-        }    
-
-        if(iso31661Tags.length > 0){
-            iso31661Tags.unshift(['G', namespace]);
-            tags.push(...iso31661Tags);
-        }
-        
-    }
-
-    if (opts.iso31662 && input.countryCode && input.regionName) {
-        const regionData = iso31662.find(r => r.parent === input.countryCode && r.name === input.regionName);
-        const namespace = iso31662Namespace(opts)
-        const iso31662Tags: LabelTag[] = [];
-        if (regionData) {
-            iso31662Tags.push(['g', regionData.code, namespace]);
-        }
-        if(iso31662Tags.length > 0){
-            iso31662Tags.unshift(['G', namespace]);
-            tags.push(...iso31662Tags);
-        }
-    }
-
-    if (opts.iso31663 && input.countryCode) {
-        const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
-        const namespace = iso31663Namespace(opts)
-        if (countryData) {
-            const iso31663Tags: LabelTag[] = [];
-
-            // Iterate over all types and check for updated values
-            (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach(type => {
-
-                const originalValue = countryData[type as keyof ISO31661Entry];
-                const updatedValues = getUpdatedIso31663Values(type, originalValue);
     
-                // Add updated values if they are different from the original
-                updatedValues.forEach(updatedValue => {
-                    if ( (originalValue !== updatedValue && type !== 'name'))
-                        iso31663Tags.push(['g', updatedValue, namespace]);
-                });
-            });
-    
-            // Add the ISO-3166-3 namespace label if there are any updated tags
-            if (iso31663Tags.length > 0) {
-                iso31663Tags.unshift(['G', namespace]);
-                tags.push(...iso31663Tags);
-            }
-        }
+    if(opts.legacy === false) {
+      // GPS
+      if(opts?.gps && input.geohash && (!input?.lat || !input?.lon)) {
+        const dd = ngeohash.decode(input.geohash)
+        console.log('wtf', dd)
+        input.lat = dd.latitude
+        input.lon = dd.longitude
+      }
+      if (opts?.gps && input.lat && input.lon) {
+          tags.push(['G', `dd`]);
+          tags.push(['g', `${input.lat}, ${input.lon}`, 'dd']);
+
+          const latResolution = calculateResolution(input.lat, opts.ddMaxResolution);
+          const lonResolution = calculateResolution(input.lon, opts.ddMaxResolution);
+
+          tags.push(['G', `lat`]);
+          for (let i = latResolution; i > 0; i--) {
+              const truncatedLat = truncateToResolution(input.lat, i);
+              tags.push(['g', truncatedLat.toString(), 'lat']);
+          }
+
+          tags.push(['G', `lon`]);
+          for (let i = lonResolution; i > 0; i--) {
+              const truncatedLon = truncateToResolution(input.lon, i);
+              tags.push(['g', truncatedLon.toString(), 'lon']);
+          }
+      }
+
+      if (opts.iso31661 && input.countryCode) {
+          const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
+          const namespace = iso31661Namespace(opts)
+          const iso31661Tags: LabelTag[] = [];
+          if (countryData) {
+              iso31661Tags.push(['g', countryData.alpha2, namespace]);
+              iso31661Tags.push(['g', countryData.alpha3, namespace]);
+              iso31661Tags.push(['g', countryData.numeric, namespace]);
+              if(countryData.name) {
+                  iso31661Tags.push(['G', 'countryName']);
+                  iso31661Tags.push(['g', countryData.name, 'countryName']);
+              }
+          }    
+
+          if(iso31661Tags.length > 0){
+              iso31661Tags.unshift(['G', namespace]);
+              tags.push(...iso31661Tags);
+          }
+          
+      }
+
+      if (opts.iso31662 && input.countryCode && input.regionName) {
+          const regionData = iso31662.find(r => r.parent === input.countryCode && r.name === input.regionName);
+          const namespace = iso31662Namespace(opts)
+          const iso31662Tags: LabelTag[] = [];
+          if (regionData) {
+              iso31662Tags.push(['g', regionData.code, namespace]);
+          }
+          if(iso31662Tags.length > 0){
+              iso31662Tags.unshift(['G', namespace]);
+              tags.push(...iso31662Tags);
+          }
+      }
+
+      if (opts.iso31663 && input.countryCode) {
+          const countryData = iso31661.find(c => c.alpha2 === input.countryCode);
+          const namespace = iso31663Namespace(opts)
+          if (countryData) {
+              const iso31663Tags: LabelTag[] = [];
+
+              // Iterate over all types and check for updated values
+              (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach(type => {
+
+                  const originalValue = countryData[type as keyof ISO31661Entry];
+                  const updatedValues = getUpdatedIso31663Values(type, originalValue);
+      
+                  // Add updated values if they are different from the original
+                  updatedValues.forEach(updatedValue => {
+                      if ( (originalValue !== updatedValue && type !== 'name'))
+                          iso31663Tags.push(['g', updatedValue, namespace]);
+                  });
+              });
+      
+              // Add the ISO-3166-3 namespace label if there are any updated tags
+              if (iso31663Tags.length > 0) {
+                  iso31663Tags.unshift(['G', namespace]);
+                  tags.push(...iso31663Tags);
+              }
+          }
+      }
+
+      if ((opts.city || opts.cityName) && input.cityName && !opts.legacy) {
+          tags.push(['G', 'cityName']);
+          tags.push(['g', input.cityName, 'cityName']);
+      }
+
+      if ((opts.planet || opts.planetName) && input.planetName && !opts.legacy) {
+          tags.push(['G', 'planetName']);
+          tags.push(['g', input.planetName, 'planetName']);
+      }
+
     }
 
-    if ((opts.city || opts.cityName) && input.cityName) {
-        tags.push(['G', 'cityName']);
-        tags.push(['g', input.cityName, 'cityName']);
-    }
-
-    if ((opts.planet || opts.planetName) && input.planetName) {
-        tags.push(['G', 'planetName']);
-        tags.push(['g', input.planetName, 'planetName']);
-    }
-
-    let result = tags
+    result = tags
 
     if(!opts.country && opts.countryCode !== true){
         const namespace = iso31661Namespace(opts)
@@ -400,6 +417,8 @@ export default (input: InputData | null, opts?: Options): GeoTags[] => {
         iso31662: false, 
         iso31663: false, 
         geohash: true,
+        
+        legacy: false,
 
         gps: false,
 
