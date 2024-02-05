@@ -200,9 +200,10 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     // Geohash
     if (opts.geohash && input.lat && input.lon) {
         const fullGeohash = ngeohash.encode(input.lat, input.lon);
+        if(fullGeohash.length > 0) tags.push(['G', 'geohash' ]);
         for (let i = fullGeohash.length; i > 0; i--) {
             const partialGeohash = fullGeohash.substring(0, i);
-            tags.push(['g', partialGeohash ]);
+            tags.push(['g', partialGeohash, 'geohash' ]);
         }
     }
 
