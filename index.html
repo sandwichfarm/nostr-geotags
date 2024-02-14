@@ -2,9 +2,11 @@
 <p>ATTENTION: Use at your own risk, this is not a widely accepted standard, and there are chances a proposed standard will differ greatly or slightly from this pattern. <a href="https://github.com/nostr-protocol/nips/pull/952">Find YAGT NIP here</a></p>
 </blockquote>
 <p><a href="https://github.com/sandwichfarm/nostr-geotags/releases/latest"><img src="https://img.shields.io/npm/v/nostr-geotags" alt="semver"></a> 
-<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml/badge.svg" alt="Test"></a> 
-<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg" alt="publish"></a> 
 <a href="https://github.com/sandwichfarm/nostr-geotags/actions"><img src="https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg" alt="cov"></a>
+<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml/badge.svg" alt="test"></a> 
+<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg" alt="publish"></a> 
+<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/docs.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/docs.yaml/badge.svg" alt="docs"></a> 
+<a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/coverage.yaml/badge.svg" alt="covgen"></a> 
 <img src="https://img.shields.io/bundlephobia/minzip/nostr-geotags" alt="npm bundle size">
 <img src="https://img.shields.io/bundlephobia/min/nostr-geotags" alt="npm bundle size"></p>
 <a id="md:summary" class="tsd-anchor"></a><h2><a href="#md:summary">Summary</a></h2><p><code>nostr-geotags</code> is a modern ESM-only package for generating nostr geo tags (<code>[&#39;g&#39;, ...]</code>) based on various inputs like latitude, longitude, city, country, etc. It uses <code>iso-3166</code> and <code>ngeohash</code> to generate geodata.  This package is alpha and the API and response formats <em>will</em> change.</p>
@@ -91,13 +93,11 @@
 <li><strong><code>isoAsNamespace==false [default]</code></strong><ul>
 <li>Alpha-2 code: <code>[ &#39;g&#39;, &#39;HU&#39;, &#39;countryCode&#39; ]</code></li>
 <li>Alpha-3 code: <code>[ &#39;g&#39;, &#39;HUN&#39;, &#39;countryCode&#39;]</code></li>
-<li>Numeric code: <code>[ &#39;g&#39;, &#39;348&#39;, &#39;countryCode&#39; ]</code></li>
 </ul>
 </li>
 <li><strong><code>isoAsNamespace==true</code></strong><ul>
 <li>Alpha-2 code: <code>[ &#39;g&#39;, &#39;HU&#39;, &#39;ISO-3166-1&#39; ]</code></li>
 <li>Alpha-3 code: <code>[ &#39;g&#39;, &#39;HUN&#39;, &#39;ISO-3166-1&#39;]</code></li>
-<li>Numeric code: <code>[ &#39;g&#39;, &#39;348&#39;, &#39;ISO-3166-1&#39; ]</code></li>
 </ul>
 </li>
 </ul>
