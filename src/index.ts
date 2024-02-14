@@ -108,7 +108,7 @@ const DD_MAX_RES_DEFAULT = 9
 /**
  * Retrieves updated ISO-3166-3 values based on a given code.
  *
- * @param {ISO31663FieldType} type - The type of the ISO-3166-3 field (alpha2, alpha3, numeric, name).
+ * @param {ISO31663FieldType} type - The type of the ISO-3166-3 field (alpha2, alpha3, name).
  * @param {string} code - The ISO-3166-3 code to find updated values for.
  * @returns {string[]} An array of updated ISO-3166-3 values.
  *
@@ -227,7 +227,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
           if (countryData) {
               iso31661Tags.push(['g', countryData.alpha2, namespace]);
               iso31661Tags.push(['g', countryData.alpha3, namespace]);
-              iso31661Tags.push(['g', countryData.numeric, namespace]);
               if(countryData.name) {
                   iso31661Tags.push(['G', 'countryName']);
                   iso31661Tags.push(['g', countryData.name, 'countryName']);
@@ -261,7 +260,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
               const iso31663Tags: LabelTag[] = [];
 
               // Iterate over all types and check for updated values
-              (['alpha2', 'alpha3', 'numeric', 'name'] as const).forEach(type => {
+              (['alpha2', 'alpha3', 'name'] as const).forEach(type => {
 
                   const originalValue = countryData[type as keyof ISO31661Entry];
                   const updatedValues = getUpdatedIso31663Values(type, originalValue);
@@ -281,12 +280,12 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
           }
       }
 
-      if ((opts.city || opts.cityName) && input.cityName && !opts.legacy) {
+      if ((opts.city || opts.cityName) && input.cityName) {
           tags.push(['G', 'cityName']);
           tags.push(['g', input.cityName, 'cityName']);
       }
 
-      if ((opts.planet || opts.planetName) && input.planetName && !opts.legacy) {
+      if ((opts.planet || opts.planetName) && input.planetName) {
           tags.push(['G', 'planetName']);
           tags.push(['g', input.planetName, 'planetName']);
       }

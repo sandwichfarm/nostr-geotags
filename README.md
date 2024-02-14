@@ -117,11 +117,9 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
     - **`isoAsNamespace==false [default]`**
       - Alpha-2 code: `[ 'g', 'HU', 'countryCode' ]`
       - Alpha-3 code: `[ 'g', 'HUN', 'countryCode']`
-      - Numeric code: `[ 'g', '348', 'countryCode' ]`
     - **`isoAsNamespace==true`**
       - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1' ]`
       - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1']`
-      - Numeric code: `[ 'g', '348', 'ISO-3166-1' ]`
 
 4. **ISO-3166-2 Codes**: 
    - These tags represent region information derived from the `iso-3166` library and are based on the `countryCode` and `regionCode` input values. They are not passthrough values. 

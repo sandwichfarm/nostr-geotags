@@ -70,7 +70,6 @@ describe('generateTags()', () => {
           [ 'G', 'countryCode' ],
           [ 'g', 'HU', 'countryCode' ],
           [ 'g', 'HUN', 'countryCode' ],
-          [ 'g', '348', 'countryCode' ],
           [ 'G', 'countryName' ],
           [ 'g', 'Hungary', 'countryName' ],
           [ 'G', 'regionCode' ],
@@ -168,7 +167,7 @@ describe('generateTags()', () => {
 
         const result = ngeotags(input, options);
         console.log('all high specificity', result.length, result) 
-        expect(result).toHaveLength(34);
+        expect(result).toHaveLength(33);
     })
 
     it('should generate legacy tags when opts.legacy is true', () => {
@@ -245,7 +244,6 @@ describe('generateTags()', () => {
             [ 'g', '19', 'lon' ],
             [ 'g', 'HU', 'countryCode' ],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ],
             [ 'g', 'Hungary', 'countryName' ],
             [ 'g', 'HU-BU', 'regionCode' ]
           ])
@@ -270,7 +268,6 @@ describe('generateTags()', () => {
             [ 'G', 'countryCode' ],
             [ 'g', 'HU', 'countryCode'],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ],
             [ 'G', 'regionCode' ],
@@ -454,7 +451,6 @@ describe('generateTags()', () => {
             [ 'G', 'countryCode' ],
             [ 'g', 'HU', 'countryCode'],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
         ]));
@@ -507,7 +503,6 @@ describe('generateTags()', () => {
             [ 'G', 'countryCode' ],
             [ 'g', 'AI', 'countryCode'],
             [ 'g', 'AIA', 'countryCode' ],
-            [ 'g', '660', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Anguilla', 'countryName' ],
             [ 'G', 'countryCode' ],
@@ -535,7 +530,6 @@ describe('generateTags()', () => {
             ['G', 'countryCode'],
             [ 'g', 'DE', 'countryCode' ],
             [ 'g', 'DEU', 'countryCode' ],
-            [ 'g', '276', 'countryCode' ],
         ]))
     });
 
@@ -585,7 +579,6 @@ describe('generateTags()', () => {
             ['G', 'countryCode'],    
             [ 'g', 'HU', 'countryCode' ],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
         ]))
@@ -674,7 +667,6 @@ describe('namespace inflection', () => {
             [ 'G', 'countryCode' ],
             [ 'g', 'HU', 'countryCode' ],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode'],
             [ 'G', 'countryName' ],
             [ 'g', 'Hungary', 'countryName' ]
           ]));
@@ -753,7 +745,6 @@ describe('sortTagsByKey()', () => {
             [ 'g', 'HU', 'countryCode'],
             [ 'G', 'countryCode' ],
             [ 'g', 'HUN', 'countryCode' ],
-            [ 'g', '348', 'countryCode' ]
           ];
 
         console.log('before sort', tags)
@@ -764,7 +755,6 @@ describe('sortTagsByKey()', () => {
             [ 'G', 'countryCode' ],
             [ 'g', 'HU', 'countryCode' ],
             [ 'g', 'HUN', 'countryCode'],
-            [ 'g', '348', 'countryCode' ]
           ]);
     });
 })
@@ -774,7 +764,6 @@ describe('filterOutType()', () => {
         const tags: GeoTags[] = [
             ['g', 'HU', 'countryCode'],
             ['g', 'HUN', 'countryCode'],
-            ['g', '348', 'countryCode'],
             ['g', 'HU-BU', 'regionCode']
         ];
 
