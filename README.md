@@ -244,6 +244,7 @@ const options = {
 };
 
 event.tags = [...event.tags, ...ngeotags(inputData, options)];
+//sign and verify the event
 console.log(event);
 ```
 
