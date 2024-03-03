@@ -29,14 +29,6 @@ pnpm add nostr-geotags
 ```
 
 ## Usage
-First, import `nostr-geotags` in your project:
-
-```
-import ngeotags from 'nostr-geotags';
-```
-
-Then, use it to generate tags:
-
 ```
 import ngeotags from 'nostr-geotags'
 
