@@ -38,7 +38,31 @@ import ngeotags from 'nostr-geotags';
 Then, use it to generate tags:
 
 ```
-const tags = ngeotags(inputData, options);
+import ngeotags from 'nostr-geotags'
+
+event = {}
+event.kind = 1
+//created_at, content etc...
+event.tags = []
+event.tags.push(['t', 'nostrworks'])
+
+const inputData = {
+  lat: 52.5200,
+  lon: 13.4050,
+  city: 'Berlin',
+  countryCode: 'DE'
+};
+
+const options = {
+  geohash: true,
+  gps: true,
+  city: true,
+  iso31661: true
+};
+
+event.tags = [...event.tags, ...ngeotags(inputData, options)];
+//sign and verify the event
+console.log(event);
 ```
 
 ## Input Reference
@@ -215,37 +239,6 @@ This is a response with all options enabled (deduped, `dedupe: true`)
   [ 'G', 'planetName' ],
   [ 'g', 'Earth', 'planetName' ]
 ]
-```
-
-## Example
-Here's a basic usage example:
-
-```
-import ngeotags from 'nostr-geotags'
-
-event = {}
-event.kind = 1
-//created_at, content etc...
-event.tags = []
-event.tags.push(['t', 'nostrworks'])
-
-const inputData = {
-  lat: 52.5200,
-  lon: 13.4050,
-  city: 'Berlin',
-  countryCode: 'DE'
-};
-
-const options = {
-  geohash: true,
-  gps: true,
-  city: true,
-  iso31661: true
-};
-
-event.tags = [...event.tags, ...ngeotags(inputData, options)];
-//sign and verify the event
-console.log(event);
 ```
 
 ## Development
