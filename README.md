@@ -49,7 +49,7 @@ const options = {
   geohash: true,
   gps: true,
   city: true,
-  iso31661: true
+  iso31662: true
 };
 
 event.tags = [...event.tags, ...ngeotags(inputData, options)];
