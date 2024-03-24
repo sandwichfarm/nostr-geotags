@@ -46,7 +46,7 @@ export type ISO31663FieldType = 'alpha2' | 'alpha3' | 'numeric' | 'name';
 /**
  * Represents a nostr event `g` (geo) tag with a length of 2
  * 
- * @typedef {Array} GeoTag
+ * @type {Array} GeoTag
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
  * - First element (string): See NIP-52, always 'g' 
@@ -58,7 +58,7 @@ export type Geohash = [string, string] | [string, string, string];
 /**
  * Represents a nostr event `L` (label) tag with a length of 2
  * 
- * @typedef {Array} LabelNamespace
+ * @type {Array} LabelNamespace
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
  * - First element (string): See NIP-32, always 'G' 
@@ -70,7 +70,7 @@ export type LabelNamespace = [ string, string ]
 /**
  * Represents a nostr event `l` (geo) tag with a length of 2
  * 
- * @typedef {Array} Label
+ * @type {Array} Label
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
  * - First element (string): See NIP-32, always 'g' 
@@ -83,7 +83,7 @@ export type Label = [ string, string, string ]
 /**
  * Represents a union of LabelNamespace and Label
  * 
- * @typedef {Array} LabelTag
+ * @type {Array} LabelTag
  * 
  * A GeoTag is either a @type Label or @type LabelNamespace
  *  
@@ -93,7 +93,7 @@ export type LabelTag = LabelNamespace | Label;
 /**
  * Represents a union of all possible types returned by generateTags() 
  * 
- * @typedef {Array} Label
+ * @type {Array} Label
  * 
  * A GeoTag is an array with either three or four elements, structured as follows:
  * - First element (string): See NIP-32, always 'g' 
