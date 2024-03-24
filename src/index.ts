@@ -183,12 +183,12 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         fullGeohash = input.geohash
       }
       if(fullGeohash && fullGeohash.length > 0 && opts.legacy === false) {
-        tags.push(['G', 'geohash' ]);
+        tags.push(['G', 'gh' ]);
       }
       for (let i = fullGeohash.length; i > 0; i--) {
           const partialGeohash = fullGeohash.substring(0, i);
           const tag: Geohash = ['g', partialGeohash ]
-          if(!opts.legacy) tag.push('geohash')
+          if(!opts.legacy) tag.push('gh')
           tags.push(tag);
       }
     }
