@@ -1,7 +1,5 @@
 # nostr-geotags
 
-> ATTENTION: Use at your own risk, this is not a widely accepted standard, and there are chances a proposed standard will differ greatly or slightly from this pattern. [See NIP-115](https://github.com/nostr-protocol/nips/pull/952)
-
 [![semver](https://img.shields.io/npm/v/nostr-geotags)](https://github.com/sandwichfarm/nostr-geotags/releases/latest) 
 [![cov](https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg)](https://github.com/sandwichfarm/nostr-geotags/actions)
 [![test](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml/badge.svg)](https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml) 
