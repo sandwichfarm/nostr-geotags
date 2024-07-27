@@ -129,11 +129,11 @@ const getUpdatedIso31663Values = (type: ISO31663FieldType, code: string): string
     return [code];
 };
 
-export const iso31661Namespace = (opts: Options): string => 'ISO-3166-1'
+export const iso31661Namespace = (opts: Options): string => opts.isoAsNamespace? 'ISO-3166-1': 'countryCode'
 
-export const iso31662Namespace = (opts: Options): string  => 'ISO-3166-2'
+export const iso31662Namespace = (opts: Options): string  => opts.isoAsNamespace? 'ISO-3166-2': 'regionCode'
 
-export const iso31663Namespace = (opts: Options): string  => 'ISO-3166-3'
+export const iso31663Namespace = (opts: Options): string  => opts.isoAsNamespace? 'ISO-3166-3': 'countryCode'
 
 /**
  * Truncates a number (float) to a specified precision. Generally used for dd (lat and lon) values.
@@ -182,7 +182,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
       }
       for (let i = fullGeohash.length; i > 0; i--) {
           const partialGeohash = fullGeohash.substring(0, i);
-          const tag: Geohash = ['l', partialGeohash ]
+          const tag: Geohash = ['g', partialGeohash ]
           tags.push(tag);
       }
     }
@@ -199,16 +199,16 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const latResolution = calculateResolution(input.lat, opts.ddMaxResolution);
         const lonResolution = calculateResolution(input.lon, opts.ddMaxResolution);
 
-        tags.push(['L', `geo.lat`]);
+        tags.push(['L', `dd.lat`]);
         for (let i = latResolution; i > 0; i--) {
             const truncatedLat = truncateToResolution(input.lat, i);
-            tags.push(['l', truncatedLat.toString(), 'geo.lat']);
+            tags.push(['l', truncatedLat.toString(), 'dd.lat']);
         }
 
-        tags.push(['L', `geo.lon`]);
+        tags.push(['L', `dd.lon`]);
         for (let i = lonResolution; i > 0; i--) {
             const truncatedLon = truncateToResolution(input.lon, i);
-            tags.push(['l', truncatedLon.toString(), 'geo.lon']);
+            tags.push(['l', truncatedLon.toString(), 'dd.lon']);
         }
     }
 
@@ -217,9 +217,9 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31661Namespace(opts)
         const iso31661Tags: LabelTag[] = [];
         if (countryData) {
-            iso31661Tags.push(['l', countryData.alpha2, `${namespace}`]);
-            iso31661Tags.push(['l', countryData.alpha3, `${namespace}`]);
-            iso31661Tags.push(['l', countryData.numeric, `${namespace}`]);
+            iso31661Tags.push(['l', countryData.alpha2, namespace]);
+            iso31661Tags.push(['l', countryData.alpha3, namespace]);
+            iso31661Tags.push(['l', countryData.numeric, namespace]);
             if(countryData.name) {
                 iso31661Tags.push(['L', 'countryName']);
                 iso31661Tags.push(['l', countryData.name, 'countryName']);
@@ -238,7 +238,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         const namespace = iso31662Namespace(opts)
         const iso31662Tags: LabelTag[] = [];
         if (regionData) {
-            iso31662Tags.push(['l', regionData.code, `${namespace}`]);
+            iso31662Tags.push(['l', regionData.code, namespace]);
         }
         if(iso31662Tags.length > 0){
             iso31662Tags.unshift(['L', namespace]);
@@ -252,7 +252,6 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
         if (countryData) {
             const iso31663Tags: LabelTag[] = [];
 
-            // Iterate over all types and check for updated values
             (['alpha2', 'alpha3', 'name'] as const).forEach(type => {
 
                 const originalValue = countryData[type as keyof ISO31661Entry];
@@ -260,7 +259,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
     
                 updatedValues.forEach(updatedValue => {
                     if ( (originalValue !== updatedValue && type !== 'name'))
-                        iso31663Tags.push(['l', updatedValue, `${namespace}`]);
+                        iso31663Tags.push(['l', updatedValue, namespace]);
                 });
             });
     
@@ -311,7 +310,7 @@ const generateTags = (input: InputData, opts: Options): GeoTags[] => {
  * @returns {GeoTags[]} - The sanitized array of GeoTags
  */
 export const sanitize = (tags: GeoTags[]): GeoTags[] => {   
-    tags = tags.filter(tag => tag[0] === 'l' || tag[0] === 'L' )
+    tags = tags.filter(tag => tag[0] === 'l' || tag[0] === 'L' || tag[0] === 'g')
     tags = filterNonStringTags(tags)
     return tags
 }

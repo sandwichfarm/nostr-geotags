@@ -45,26 +45,26 @@ describe('generateTags()', () => {
         const result = ngeotags(input, options);
         // console.log('all defaults', result)
         expect(result).toEqual([
-            [ 'l', 'u2mwdd8q4' ],
-            [ 'l', 'u2mwdd8q' ],
-            [ 'l', 'u2mwdd8' ],
-            [ 'l', 'u2mwdd' ],
-            [ 'l', 'u2mwd' ],
-            [ 'l', 'u2mw' ],
-            [ 'l', 'u2m' ],
-            [ 'l', 'u2' ],
-            [ 'l', 'u' ],
+            [ 'g', 'u2mwdd8q4' ],
+            [ 'g', 'u2mwdd8q' ],
+            [ 'g', 'u2mwdd8' ],
+            [ 'g', 'u2mwdd' ],
+            [ 'g', 'u2mwd' ],
+            [ 'g', 'u2mw' ],
+            [ 'g', 'u2m' ],
+            [ 'g', 'u2' ],
+            [ 'g', 'u' ],
             [ 'l', '47.5636, 19.0947', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47.5636', 'geo.lat' ],
-            [ 'l', '47.563', 'geo.lat' ],
-            [ 'l', '47.56', 'geo.lat' ],
-            [ 'l', '47.5', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19.0947', 'geo.lon' ],
-            [ 'l', '19.094', 'geo.lon' ],
-            [ 'l', '19.09', 'geo.lon' ],
-            [ 'l', '19', 'geo.lon' ],
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47.5636', 'dd.lat' ],
+            [ 'l', '47.563', 'dd.lat' ],
+            [ 'l', '47.56', 'dd.lat' ],
+            [ 'l', '47.5', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19.0947', 'dd.lon' ],
+            [ 'l', '19.094', 'dd.lon' ],
+            [ 'l', '19.09', 'dd.lon' ],
+            [ 'l', '19', 'dd.lon' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'l', 'HU', 'ISO-3166-1' ],
             [ 'l', 'HUN', 'ISO-3166-1' ],
@@ -200,15 +200,15 @@ describe('generateTags()', () => {
         const result = ngeotags(input);
         console.log('default', result)
         expect(result).toEqual([
-            [ 'l', 'u2mwdd8q4' ],
-            [ 'l', 'u2mwdd8q' ],
-            [ 'l', 'u2mwdd8' ],
-            [ 'l', 'u2mwdd' ],
-            [ 'l', 'u2mwd' ],
-            [ 'l', 'u2mw' ],
-            [ 'l', 'u2m' ],
-            [ 'l', 'u2' ],
-            [ 'l', 'u' ],
+            [ 'g', 'u2mwdd8q4' ],
+            [ 'g', 'u2mwdd8q' ],
+            [ 'g', 'u2mwdd8' ],
+            [ 'g', 'u2mwdd' ],
+            [ 'g', 'u2mwd' ],
+            [ 'g', 'u2mw' ],
+            [ 'g', 'u2m' ],
+            [ 'g', 'u2' ],
+            [ 'g', 'u' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'l', 'HU', 'ISO-3166-1' ],
             [ 'l', 'HUN', 'ISO-3166-1' ],
@@ -230,14 +230,14 @@ describe('generateTags()', () => {
         const result = ngeotags(input, { sort: true, iso31661: true, iso31663:true, iso31662: true, geohash: false, gps: true });
         // console.log('ngeotags: sorted', result)
         expect(result).toEqual([
-            [ 'L', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
+            [ 'L', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'L', 'countryName' ],
             [ 'L', 'ISO-3166-2' ],
             [ 'l', '47, 19', 'dd' ],
-            [ 'l', '47', 'geo.lat' ],
-            [ 'l', '19', 'geo.lon' ],
+            [ 'l', '47', 'dd.lat' ],
+            [ 'l', '19', 'dd.lon' ],
             [ 'l', 'HU', 'ISO-3166-1' ],
             [ 'l', 'HUN', 'ISO-3166-1' ],
             [ 'l', '348', 'ISO-3166-1' ],
@@ -257,10 +257,10 @@ describe('generateTags()', () => {
         console.log('ngeotags: unsorted', result)
         expect(result).toEqual([
             [ 'l', '47, 19', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19', 'geo.lon' ],
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19', 'dd.lon' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'l', 'HU', 'ISO-3166-1' ],
             [ 'l', 'HUN', 'ISO-3166-1' ],
@@ -295,14 +295,14 @@ describe('generateTags()', () => {
         const result = ngeotags(input, { gps: true });
         console.log('should handle gps coordinates correctly', result)
         expect(result).toEqual(expect.arrayContaining([
-            ['l', '47.5636', 'geo.lat'],
-            ['l', '47.563', 'geo.lat'],
-            ['l', '47.56', 'geo.lat'],
-            ['l', '47.5', 'geo.lat'],
-            ['l', '19.0947', 'geo.lon'],
-            ['l', '19.094', 'geo.lon'],
-            ['l', '19.09', 'geo.lon'],
-            ['l', '19', 'geo.lon'], 
+            ['l', '47.5636', 'dd.lat'],
+            ['l', '47.563', 'dd.lat'],
+            ['l', '47.56', 'dd.lat'],
+            ['l', '47.5', 'dd.lat'],
+            ['l', '19.0947', 'dd.lon'],
+            ['l', '19.094', 'dd.lon'],
+            ['l', '19.09', 'dd.lon'],
+            ['l', '19', 'dd.lon'], 
         ]));
     });
 
@@ -315,26 +315,26 @@ describe('generateTags()', () => {
         console.log('handles maximum decimal length', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'l', '47.12345678901, 19.12345678901', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47.123456789', 'geo.lat' ],
-            [ 'l', '47.12345678', 'geo.lat' ],
-            [ 'l', '47.1234567', 'geo.lat' ],
-            [ 'l', '47.123456', 'geo.lat' ],
-            [ 'l', '47.12345', 'geo.lat' ],
-            [ 'l', '47.1234', 'geo.lat' ],
-            [ 'l', '47.123', 'geo.lat' ],
-            [ 'l', '47.12', 'geo.lat' ],
-            [ 'l', '47.1', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19.123456789', 'geo.lon' ],
-            [ 'l', '19.12345678', 'geo.lon' ],
-            [ 'l', '19.1234567', 'geo.lon' ],
-            [ 'l', '19.123456', 'geo.lon' ],
-            [ 'l', '19.12345', 'geo.lon' ],
-            [ 'l', '19.1234', 'geo.lon' ],
-            [ 'l', '19.123', 'geo.lon' ],
-            [ 'l', '19.12', 'geo.lon' ],
-            [ 'l', '19.1', 'geo.lon' ]
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47.123456789', 'dd.lat' ],
+            [ 'l', '47.12345678', 'dd.lat' ],
+            [ 'l', '47.1234567', 'dd.lat' ],
+            [ 'l', '47.123456', 'dd.lat' ],
+            [ 'l', '47.12345', 'dd.lat' ],
+            [ 'l', '47.1234', 'dd.lat' ],
+            [ 'l', '47.123', 'dd.lat' ],
+            [ 'l', '47.12', 'dd.lat' ],
+            [ 'l', '47.1', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19.123456789', 'dd.lon' ],
+            [ 'l', '19.12345678', 'dd.lon' ],
+            [ 'l', '19.1234567', 'dd.lon' ],
+            [ 'l', '19.123456', 'dd.lon' ],
+            [ 'l', '19.12345', 'dd.lon' ],
+            [ 'l', '19.1234', 'dd.lon' ],
+            [ 'l', '19.123', 'dd.lon' ],
+            [ 'l', '19.12', 'dd.lon' ],
+            [ 'l', '19.1', 'dd.lon' ]
           ]));
     });
 
@@ -345,16 +345,16 @@ describe('generateTags()', () => {
         console.log('handles shorter decimal length', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'l', '47.1234, 19.1234', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47.1233', 'geo.lat' ],
-            [ 'l', '47.123', 'geo.lat' ],
-            [ 'l', '47.12', 'geo.lat' ],
-            [ 'l', '47.1', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19.1234', 'geo.lon' ],
-            [ 'l', '19.123', 'geo.lon' ],
-            [ 'l', '19.12', 'geo.lon' ],
-            [ 'l', '19.1', 'geo.lon' ]
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47.1233', 'dd.lat' ],
+            [ 'l', '47.123', 'dd.lat' ],
+            [ 'l', '47.12', 'dd.lat' ],
+            [ 'l', '47.1', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19.1234', 'dd.lon' ],
+            [ 'l', '19.123', 'dd.lon' ],
+            [ 'l', '19.12', 'dd.lon' ],
+            [ 'l', '19.1', 'dd.lon' ]
           ]));
     });
 
@@ -365,10 +365,10 @@ describe('generateTags()', () => {
         console.log('handles integer values',result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'l', '47, 19', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19', 'geo.lon' ]
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19', 'dd.lon' ]
           ]));
     });
 
@@ -379,26 +379,26 @@ describe('generateTags()', () => {
         console.log('handles exact maxResolution decimals', result)
         expect(result).toEqual(expect.arrayContaining([
             [ 'l', '47.123456789, 19.123456789', 'dd' ],
-            [ 'L', 'geo.lat' ],
-            [ 'l', '47.123456789', 'geo.lat' ],
-            [ 'l', '47.12345678', 'geo.lat' ],
-            [ 'l', '47.1234567', 'geo.lat' ],
-            [ 'l', '47.123456', 'geo.lat' ],
-            [ 'l', '47.12345', 'geo.lat' ],
-            [ 'l', '47.1234', 'geo.lat' ],
-            [ 'l', '47.123', 'geo.lat' ],
-            [ 'l', '47.12', 'geo.lat' ],
-            [ 'l', '47.1', 'geo.lat' ],
-            [ 'L', 'geo.lon' ],
-            [ 'l', '19.123456789', 'geo.lon' ],
-            [ 'l', '19.12345678', 'geo.lon' ],
-            [ 'l', '19.1234567', 'geo.lon' ],
-            [ 'l', '19.123456', 'geo.lon' ],
-            [ 'l', '19.12345', 'geo.lon' ],
-            [ 'l', '19.1234', 'geo.lon' ],
-            [ 'l', '19.123', 'geo.lon' ],
-            [ 'l', '19.12', 'geo.lon' ],
-            [ 'l', '19.1', 'geo.lon' ]
+            [ 'L', 'dd.lat' ],
+            [ 'l', '47.123456789', 'dd.lat' ],
+            [ 'l', '47.12345678', 'dd.lat' ],
+            [ 'l', '47.1234567', 'dd.lat' ],
+            [ 'l', '47.123456', 'dd.lat' ],
+            [ 'l', '47.12345', 'dd.lat' ],
+            [ 'l', '47.1234', 'dd.lat' ],
+            [ 'l', '47.123', 'dd.lat' ],
+            [ 'l', '47.12', 'dd.lat' ],
+            [ 'l', '47.1', 'dd.lat' ],
+            [ 'L', 'dd.lon' ],
+            [ 'l', '19.123456789', 'dd.lon' ],
+            [ 'l', '19.12345678', 'dd.lon' ],
+            [ 'l', '19.1234567', 'dd.lon' ],
+            [ 'l', '19.123456', 'dd.lon' ],
+            [ 'l', '19.12345', 'dd.lon' ],
+            [ 'l', '19.1234', 'dd.lon' ],
+            [ 'l', '19.123', 'dd.lon' ],
+            [ 'l', '19.12', 'dd.lon' ],
+            [ 'l', '19.1', 'dd.lon' ]
           ]));
         // Assertions to check correct handling
     });
@@ -411,7 +411,7 @@ describe('generateTags()', () => {
 
         const result = ngeotags(input, { geohash: true });
         console.log('should handle geohash correctly', result)
-        expect(result.some(tag => tag[0] === 'l')).toBeTruthy();
+        expect(result.some(tag => tag[0] === 'g')).toBeTruthy();
     });
 
 
@@ -421,7 +421,7 @@ describe('generateTags()', () => {
       };
 
       const result = ngeotags(input, { gps: true });
-      //console.log('hash', result)
+      console.log('should decode geohash when geohash passed via input, either lat or lon are null, and gps is enabled', result)
       expect(result.some(tag => tag[0] === 'l')).toBeTruthy();
     });
 
@@ -441,8 +441,8 @@ describe('generateTags()', () => {
       console.log('hash and dd passed', result)
       expect(result.some(tag => tag[0] === 'l')).toBeTruthy();
       expect(result).toEqual(expect.arrayContaining([
-        [ 'l', '47.5636', 'geo.lat' ],
-        [ 'l', '19.0946', 'geo.lon' ],
+        [ 'l', '47.5636', 'dd.lat' ],
+        [ 'l', '19.0946', 'dd.lon' ],
     ]));
   });
 
@@ -620,23 +620,21 @@ describe('generateTags()', () => {
 describe('namespace inflection', () => {
 
 
-    it('should handle countryCodes correctly when isoAsNamespace is false', () => {
+    it('should handle countryCodes correctly when isoAsNamespace is true', () => {
         const input: InputData = {
             countryCode: 'HU',
         };
 
         const opts: Options = {
-            // continentCode: true,
-            isoAsNamespace: false,
+            isoAsNamespace: true,
             iso31661: true,
             iso31662: true,
             iso31663: true
         }
 
         const result = ngeotags(input, opts);
-        //console.log('isoAsNamespace is false', result)
+        console.log('isoAsNamespace is true', result)
         expect(result).toEqual(expect.arrayContaining([
-            [ 'L', 'ISO-3166-1' ],
             [ 'L', 'ISO-3166-1' ],
             [ 'l', 'HU', 'ISO-3166-1' ],
             [ 'l', 'HUN', 'ISO-3166-1' ],
@@ -644,6 +642,75 @@ describe('namespace inflection', () => {
             [ 'l', 'Hungary', 'countryName' ]
           ]));
     });
+
+    it('should handle countryCodes correctly when isoAsNamespace is false', () => {
+        const input: InputData = {
+            countryCode: 'HU',
+        };
+
+        const opts: Options = {
+            isoAsNamespace: false,
+            iso31661: true,
+            iso31662: true,
+            iso31663: true
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('isoAsNamespace is false', result)
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'L', 'countryCode' ],
+            [ 'l', 'HU', 'countryCode' ],
+            [ 'l', 'HUN', 'countryCode' ],
+            [ 'L', 'countryName' ],
+            [ 'l', 'Hungary', 'countryName' ]
+          ]));
+    });
+
+    it('should handle regionCodes correctly when isoAsNamespace is false', () => {
+        const input: InputData = {
+            countryCode: 'HU',
+            regionName: 'Budapest'
+        };
+
+        const opts: Options = {
+            isoAsNamespace: false,
+            iso31661: false,
+            iso31662: true,
+            iso31663: false
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('regionCodes: isoAsNamespace is false', result)
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'L', 'regionCode' ],
+            [ 'l', 'HU-BU', 'regionCode' ],
+          ]));
+    });
+
+    it('should handle regionCodes correctly when isoAsNamespace is true', () => {
+        const input: InputData = {
+            countryCode: 'HU',
+            regionName: 'Budapest'
+        };
+
+        const opts: Options = {
+            isoAsNamespace: true,
+            iso31661: true,
+            iso31662: true,
+            iso31663: true,
+            regionCode: true
+        }
+
+        const result = ngeotags(input, opts);
+        console.log('regionCodes: isoAsNamespace is false', result)
+        expect(result).toEqual(expect.arrayContaining([
+            [ 'L', 'ISO-3166-2' ],
+            [ 'l', 'HU-BU', 'ISO-3166-2' ],
+          ]));
+    });
+
+
+
     // it('should handle continent code correctly when unM49AsNamespace is false', () => {
     //     const input: InputData = {
     //         continentCode: 'EU',
