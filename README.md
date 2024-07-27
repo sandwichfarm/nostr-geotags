@@ -90,9 +90,6 @@ The `options` object specifies which types of tags to generate.
 - `iso31662` (boolean): Generate ISO 3166-2 tags. Default: `false`.
 - `iso31663` (boolean): Generate ISO 3166-3 tags. Default: `true`. See `ISO-3166-3 Behaviors`  
 
-### Transform options
-- `isoAsNamespace` (boolean): Use ISO standand (ex: `ISO-3166-1`)  as the namespace for tags. If false will use `countryCode` and `regionCode` instead of `ISO-3166-1/3` and `iso-3166-2` respectively. Default: `false`.
-
 ### Response Options
 Please note: that these will only have an effect on the output if the input for their corresponding values were set. This is especially true for passthrough values. Some of these passthrough values may be deduped if they are not unique against ISO values. 
 - `geohash` (boolean): Includes geohash codes from `ngeohash`, with diminishing resolution, based on latitude and longitude. Default: `true`.
@@ -105,9 +102,6 @@ Please note: that these will only have an effect on the output if the input for 
 - `regionName` (boolean): Include a tag for the `regionName` in response **if available**. Default:`true`.
 - `gps` (boolean): Include latitude and longitude as a 'dd' tag (de-factor GPS standards) and separate tags for lat and lon with diminishing resolution. Default: `false`.
 - `planet` or `planetName` (boolean): Include a tag for the `planetName` in response **if available**. Default: `false`.
-
-### Compatibility Options
-- `legacy` (boolean) Will only return legacy `g` tags, for example: `["g", "u2mwdd"]`
 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
@@ -131,11 +125,9 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
    - These tags represent country information derived from the `iso-3166` library and are based on the provided `countryCode` input value. They are not passthrough.
    - Examples 
     - **`isoAsNamespace==false [default]`**
-      - Alpha-2 code: `[ 'g', 'HU', 'countryCode' ]`
-      - Alpha-3 code: `[ 'g', 'HUN', 'countryCode']`
-    - **`isoAsNamespace==true`**
-      - Alpha-2 code: `[ 'g', 'HU', 'ISO-3166-1' ]`
-      - Alpha-3 code: `[ 'g', 'HUN', 'ISO-3166-1']`
+      - Alpha-2 code: `[ 'l', 'HU', 'ISO-3166-1' ]`
+      - Alpha-3 code: `[ 'l', 'HUN', 'ISO-3166-1']`
+      - Numeric code: `[ 'l', '348', 'ISO-3166-1']`
 
 4. **ISO-3166-2 Codes**: 
    - These tags represent region information derived from the `iso-3166` library and are based on the `countryCode` and `regionCode` input values. They are not passthrough values. 
@@ -155,12 +147,12 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
 When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-3` code found for a given `ISO-3166-1` `countryCode` that is not a duplicate of it's `ISO-3166-1` counterpart, will be appended to the tags array. Here's an example:
 
 [
-  [ 'G', 'countryCode' ],
-  [ 'g', 'AI', 'countryCode'],
-  [ 'g', 'AIA', 'countryCode' ],
-  [ 'g', '660', 'countryCode'],
-  [ 'G', 'countryCode' ],
-  [ 'g', 'DJ', 'countryCode' ],
+  [ 'L', 'ISO-3166-1' ],
+  [ 'g', 'AI', 'ISO-3166-1'],
+  [ 'g', 'AIA', 'ISO-3166-1' ],
+  [ 'g', '660', 'ISO-3166-1'],
+  [ 'G', 'ISO-3166-3' ],
+  [ 'g', 'DJ', 'ISO-3166-3' ],
   [ 'G', 'countryName' ],
   [ 'g', 'Anguilla', 'countryName' ]
 ]
@@ -173,16 +165,15 @@ Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the ch
 Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, **and** `planet` are provided, with everything else default
 ```
 [
-  [ 'G', 'geohash' ],
-  [ 'g', 'u2mwdd8q4', 'geohash' ],
-  [ 'g', 'u2mwdd8q', 'geohash' ],
-  [ 'g', 'u2mwdd8', 'geohash' ],
-  [ 'g', 'u2mwdd', 'geohash' ],
-  [ 'g', 'u2mwd', 'geohash' ],
-  [ 'g', 'u2mw', 'geohash' ],
-  [ 'g', 'u2m', 'geohash' ],
-  [ 'g', 'u2', 'geohash' ],
-  [ 'g', 'u', 'geohash' ],
+  [ 'g', 'u2mwdd8q4' ],
+  [ 'g', 'u2mwdd8q' ],
+  [ 'g', 'u2mwdd8' ],
+  [ 'g', 'u2mwdd' ],
+  [ 'g', 'u2mwd' ],
+  [ 'g', 'u2mw' ],
+  [ 'g', 'u2m' ],
+  [ 'g', 'u2' ],
+  [ 'g', 'u' ],
   [ 'G', 'countryCode' ],
   [ 'g', 'HU', 'countryCode' ],
   [ 'g', 'HUN', 'countryCode' ],
@@ -196,40 +187,39 @@ Here is the default response when `lat`, `lon`, `countryCode`, `regionName`, **a
 This is a response with all options enabled (deduped, `dedupe: true`)
 
 ```
- [
-  [ 'G', 'dd' ],
-  [ 'g', '47.5636, 19.0947', 'dd' ],
-  [ 'G', 'lat' ],
-  [ 'g', '47.5636', 'lat' ],
-  [ 'g', '47.563', 'lat' ],
-  [ 'g', '47.56', 'lat' ],
-  [ 'g', '47.5', 'lat' ],
-  [ 'G', 'lon' ],
-  [ 'g', '19.0947', 'lon' ],
-  [ 'g', '19.094', 'lon' ],
-  [ 'g', '19.09', 'lon' ],
-  [ 'g', '19', 'lon' ],
-  [ 'G', 'geohash' ],
-  [ 'g', 'u2mwdd8q4', 'geohash' ],
-  [ 'g', 'u2mwdd8q', 'geohash' ],
-  [ 'g', 'u2mwdd8', 'geohash' ],
-  [ 'g', 'u2mwdd', 'geohash' ],
-  [ 'g', 'u2mwd', 'geohash' ],
-  [ 'g', 'u2mw', 'geohash' ],
-  [ 'g', 'u2m', 'geohash' ],
-  [ 'g', 'u2', 'geohash' ],
-  [ 'g', 'u', 'geohash' ],
-  [ 'G', 'countryCode' ],
-  [ 'g', 'HU', 'countryCode' ],
-  [ 'g', 'HUN', 'countryCode' ],
-  [ 'G', 'countryName' ],
-  [ 'g', 'Hungary', 'countryName' ],
-  [ 'G', 'regionCode' ],
-  [ 'g', 'HU-BU', 'regionCode' ],
-  [ 'G', 'cityName' ],
-  [ 'g', 'Budapest', 'cityName' ],
-  [ 'G', 'planetName' ],
-  [ 'g', 'Earth', 'planetName' ]
+[
+  [ 'l', 'u2mwdd8q4' ],
+  [ 'l', 'u2mwdd8q' ],
+  [ 'l', 'u2mwdd8' ],
+  [ 'l', 'u2mwdd' ],
+  [ 'l', 'u2mwd' ],
+  [ 'l', 'u2mw' ],
+  [ 'l', 'u2m' ],
+  [ 'l', 'u2' ],
+  [ 'l', 'u' ],
+  [ 'l', '47.5636, 19.0947', 'dd' ],
+  [ 'L', 'geo.lat' ],
+  [ 'l', '47.5636', 'geo.lat' ],
+  [ 'l', '47.563', 'geo.lat' ],
+  [ 'l', '47.56', 'geo.lat' ],
+  [ 'l', '47.5', 'geo.lat' ],
+  [ 'L', 'geo.lon' ],
+  [ 'l', '19.0947', 'geo.lon' ],
+  [ 'l', '19.094', 'geo.lon' ],
+  [ 'l', '19.09', 'geo.lon' ],
+  [ 'l', '19', 'geo.lon' ],
+  [ 'L', 'ISO-3166-1' ],
+  [ 'l', 'HU', 'ISO-3166-1' ],
+  [ 'l', 'HUN', 'ISO-3166-1' ],
+  [ 'l', '348', 'ISO-3166-1' ],
+  [ 'L', 'countryName' ],
+  [ 'l', 'Hungary', 'countryName' ],
+  [ 'L', 'ISO-3166-2' ],
+  [ 'l', 'HU-BU', 'ISO-3166-2' ],
+  [ 'L', 'cityName' ],
+  [ 'l', 'Budapest', 'cityName' ],
+  [ 'L', 'planetName' ],
+  [ 'l', 'Earth', 'planetName' ]
 ]
 ```
 
