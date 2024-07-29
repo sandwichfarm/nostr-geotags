@@ -18,7 +18,7 @@ This package was derived from needs in [`@nostrwatch`](https://github.com/sandwi
 ## Installation
 The package is available on npm and can be installed using npm, yarn, or pnpm.
 
-```
+```bash
 npm install nostr-geotags
 
 yarn add nostr-geotags
@@ -27,7 +27,7 @@ pnpm add nostr-geotags
 ```
 
 ## Usage
-```
+```typescript
 import ngeotags from 'nostr-geotags'
 
 event = {}
@@ -222,12 +222,12 @@ This is a response with all options enabled (deduped, `dedupe: true`)
 ## Development
 To build the package, run:
 
-```
+```bash
 npm run build
 ```
 
 To run tests:
 
-```
+```bash
 npm test
 ```
