@@ -11,7 +11,7 @@
 
 
 ## Summary
-`nostr-geotags` is a modern ESM-only package for generating nostr geo tags (`['g', ...]`) based on various inputs like latitude, longitude, city, country, etc. It uses `iso-3166` and `ngeohash` to generate geodata.  This package is alpha and the API and response formats _will_ change. This package has gone full-circle and now implements `NIP-32` just as it did in the first commit. 
+`nostr-geotags` is a modern ESM-only package for generating discoverable geohash and ISO-3166-1/2/3 tags using `NIP_32` based on various inputs like latitude, longitude, city, country, etc. It uses `iso-3166` and `ngeohash` to generate geodata.  This package is alpha and the API and response formats _will_ change. This package has gone full-circle and now implements `NIP-32` just as it did in the first commit. 
 
 This package was derived from needs in [`@nostrwatch`](https://github.com/sandwichfarm/nostr-watch), an _OpenSats Grant Recipient_, and so was made possible by [OpenSats](https://opensats.org/).
 
