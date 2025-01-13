@@ -104,7 +104,7 @@ Please note: that these will only have an effect on the output if the input for 
 ## Response Reference
 The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on `NIP-01`.
 
-- The first element (`'g'`) is a constant indicating the type of tag.
+- The first element (`'l'`) is a constant indicating the type of tag (except for `geohashes` which are `g`)
 - The second element is the `value` of the tag, which can vary based on the input and options used. 
 - The third element is the `key` of the tag.
 - The fourth element (optional) is the `standard`, which is serialized with a `:` where when split `standard[0]` is the the standard's identified and `standard[1]` is the standard's value. This field is only used for ISO.
@@ -113,7 +113,7 @@ The function returns an array of tuples, where each tuple represents a tag and i
 Which tags you use depend on use-case. If your concerns are namely geospacial, using only geohashes likely suffice, if your concerns around around borders, languages or laws, `ISO-3166-3` may suffice. If your concerns are mixed, a combination of standards will suffice. In most cases the defaults are good, and most likely won't need to be changed unless you are optimizing your tags array. 
 
 ### Tag Types and Their Descriptions
-1. **GPS**: `[ 'g', '<latitude>, <longitude>', 'dd' ]`, `[ 'g', '<latitude>', 'lat' ]` and `[ l', '<longitude>', 'lon' ]`
+1. **GPS**: `[ 'l', '<latitude>, <longitude>', 'dd' ]`, `[ 'l', '<latitude>', 'lat' ]` and `[ l', '<longitude>', 'lon' ]`
    - Coordinates of diminishing resolution from the input latitude and longitude. One of each of these tags are passthrough, but the rest are progressively reduced in their precision until the final decimal point. If an integer is provided for one or both `lat` and `lon`, an integer is returned. 
    
 2. **Geohash**: `[ g', '<geohash>']` (`NIP-52`)
@@ -134,10 +134,10 @@ Which tags you use depend on use-case. If your concerns are namely geospacial, u
    - These tags also represent country information, but focus on historical changes in country codes. They are not passthrough.
    - Examples mirror the ISO-3166-1 format but relate to updated country codes.
 
-6. **City**: `[ 'g', 'Budapest', 'cityName' ]`
+6. **City**: `[ 'l', 'Budapest', 'cityName' ]`
    - A passthrough from the input city name.
 
-9. **Planet**: `[ 'g', 'Earth', 'planetName' ]`
+9. **Planet**: `[ 'l', 'Earth', 'planetName' ]`
    - A passthrough, assuming Earth as the default planet in the absence of specific planetary data.
 
 ### ISO-3166-3 Behaviors
@@ -146,13 +146,13 @@ When `iso31663` is enabled, it will affect the response contents. Any `ISO-3166-
 
 [
   [ 'L', 'ISO-3166-1' ],
-  [ 'g', 'AI', 'ISO-3166-1'],
-  [ 'g', 'AIA', 'ISO-3166-1' ],
-  [ 'g', '660', 'ISO-3166-1'],
-  [ 'G', 'ISO-3166-3' ],
-  [ 'g', 'DJ', 'ISO-3166-3' ],
-  [ 'G', 'countryName' ],
-  [ 'g', 'Anguilla', 'countryName' ]
+  [ 'l', 'AI', 'ISO-3166-1'],
+  [ 'l', 'AIA', 'ISO-3166-1' ],
+  [ 'l', '660', 'ISO-3166-1'],
+  [ 'L', 'ISO-3166-3' ],
+  [ 'l', 'DJ', 'ISO-3166-3' ],
+  [ 'L', 'countryName' ],
+  [ 'l', 'Anguilla', 'countryName' ]
 ]
 
 Here two `alpha2` codes are returned, the original `ISO-3166-1` code, and the changed `ISO-3166-3` code. Since the other `ISO-3166-3` properties for `AI` are the same as their `ISO-3166-1` counter-parts, they are not included. 
