@@ -1,4 +1,5 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>nostr-geotags</title><meta name="description" content="Documentation for nostr-geotags"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">nostr-geotags</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>nostr-geotags</h2></div><div class="tsd-panel tsd-typography"><a id="md:nostr-geotags" class="tsd-anchor"></a><h1><a href="#md:nostr-geotags">nostr-geotags</a></h1><p><a href="https://github.com/sandwichfarm/nostr-geotags/releases/latest"><img src="https://img.shields.io/npm/v/nostr-geotags" alt="semver"></a> 
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>nostr-geotags</title><meta name="description" content="Documentation for nostr-geotags"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">nostr-geotags</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>nostr-geotags</h2></div><div class="tsd-panel tsd-typography"><a id="md:nostr-geotags" class="tsd-anchor"></a><h1><a href="#md:nostr-geotags">nostr-geotags</a></h1><p><a href="https://opensats.org"><img src="https://img.shields.io/badge/%3E__-OpenSats.org-orange?labelColor=black" alt="opensats.org"></a>
+<a href="https://github.com/sandwichfarm/nostr-geotags/releases/latest"><img src="https://img.shields.io/npm/v/nostr-geotags" alt="semver"></a> 
 <a href="https://github.com/sandwichfarm/nostr-geotags/actions"><img src="https://sandwichfarm.github.io/nostr-geotags/badges/coverage.svg" alt="cov"></a>
 <a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/buildtest.yaml/badge.svg" alt="test"></a> 
 <a href="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml"><img src="https://github.com/sandwichfarm/nostr-geotags/actions/workflows/publish.yaml/badge.svg" alt="publish"></a> 
@@ -56,14 +57,14 @@
 </ul>
 <a id="md:response-reference" class="tsd-anchor"></a><h2><a href="#md:response-reference">Response Reference</a></h2><p>The function returns an array of tuples, where each tuple represents a tag and its associated data. The format of the tuples is based on <code>NIP-01</code>.</p>
 <ul>
-<li>The first element (<code>&#39;g&#39;</code>) is a constant indicating the type of tag.</li>
+<li>The first element (<code>&#39;l&#39;</code>) is a constant indicating the type of tag (except for <code>geohashes</code> which are <code>g</code>)</li>
 <li>The second element is the <code>value</code> of the tag, which can vary based on the input and options used. </li>
 <li>The third element is the <code>key</code> of the tag.</li>
 <li>The fourth element (optional) is the <code>standard</code>, which is serialized with a <code>:</code> where when split <code>standard[0]</code> is the the standard&#39;s identified and <code>standard[1]</code> is the standard&#39;s value. This field is only used for ISO.</li>
 </ul>
 <a id="md:determining-tag-usage" class="tsd-anchor"></a><h3><a href="#md:determining-tag-usage">Determining tag usage</a></h3><p>Which tags you use depend on use-case. If your concerns are namely geospacial, using only geohashes likely suffice, if your concerns around around borders, languages or laws, <code>ISO-3166-3</code> may suffice. If your concerns are mixed, a combination of standards will suffice. In most cases the defaults are good, and most likely won&#39;t need to be changed unless you are optimizing your tags array. </p>
 <a id="md:tag-types-and-their-descriptions" class="tsd-anchor"></a><h3><a href="#md:tag-types-and-their-descriptions">Tag Types and Their Descriptions</a></h3><ol>
-<li><p><strong>GPS</strong>: <code>[ &#39;g&#39;, &#39;&lt;latitude&gt;, &lt;longitude&gt;&#39;, &#39;dd&#39; ]</code>, <code>[ &#39;g&#39;, &#39;&lt;latitude&gt;&#39;, &#39;lat&#39; ]</code> and <code>[ l&#39;, &#39;&lt;longitude&gt;&#39;, &#39;lon&#39; ]</code></p>
+<li><p><strong>GPS</strong>: <code>[ &#39;l&#39;, &#39;&lt;latitude&gt;, &lt;longitude&gt;&#39;, &#39;dd&#39; ]</code>, <code>[ &#39;l&#39;, &#39;&lt;latitude&gt;&#39;, &#39;lat&#39; ]</code> and <code>[ l&#39;, &#39;&lt;longitude&gt;&#39;, &#39;lon&#39; ]</code></p>
 <ul>
 <li>Coordinates of diminishing resolution from the input latitude and longitude. One of each of these tags are passthrough, but the rest are progressively reduced in their precision until the final decimal point. If an integer is provided for one or both <code>lat</code> and <code>lon</code>, an integer is returned.</li>
 </ul>
@@ -96,12 +97,12 @@
 <li>Examples mirror the ISO-3166-1 format but relate to updated country codes.</li>
 </ul>
 </li>
-<li><p><strong>City</strong>: <code>[ &#39;g&#39;, &#39;Budapest&#39;, &#39;cityName&#39; ]</code></p>
+<li><p><strong>City</strong>: <code>[ &#39;l&#39;, &#39;Budapest&#39;, &#39;cityName&#39; ]</code></p>
 <ul>
 <li>A passthrough from the input city name.</li>
 </ul>
 </li>
-<li><p><strong>Planet</strong>: <code>[ &#39;g&#39;, &#39;Earth&#39;, &#39;planetName&#39; ]</code></p>
+<li><p><strong>Planet</strong>: <code>[ &#39;l&#39;, &#39;Earth&#39;, &#39;planetName&#39; ]</code></p>
 <ul>
 <li>A passthrough, assuming Earth as the default planet in the absence of specific planetary data.</li>
 </ul>
@@ -110,13 +111,13 @@
 <a id="md:iso-3166-3-behaviors" class="tsd-anchor"></a><h3><a href="#md:iso-3166-3-behaviors">ISO-3166-3 Behaviors</a></h3><p>When <code>iso31663</code> is enabled, it will affect the response contents. Any <code>ISO-3166-3</code> code found for a given <code>ISO-3166-1</code> <code>countryCode</code> that is not a duplicate of it&#39;s <code>ISO-3166-1</code> counterpart, will be appended to the tags array. Here&#39;s an example:</p>
 <p>[
   [ &#39;L&#39;, &#39;ISO-3166-1&#39; ],
-  [ &#39;g&#39;, &#39;AI&#39;, &#39;ISO-3166-1&#39;],
-  [ &#39;g&#39;, &#39;AIA&#39;, &#39;ISO-3166-1&#39; ],
-  [ &#39;g&#39;, &#39;660&#39;, &#39;ISO-3166-1&#39;],
-  [ &#39;G&#39;, &#39;ISO-3166-3&#39; ],
-  [ &#39;g&#39;, &#39;DJ&#39;, &#39;ISO-3166-3&#39; ],
-  [ &#39;G&#39;, &#39;countryName&#39; ],
-  [ &#39;g&#39;, &#39;Anguilla&#39;, &#39;countryName&#39; ]
+  [ &#39;l&#39;, &#39;AI&#39;, &#39;ISO-3166-1&#39;],
+  [ &#39;l&#39;, &#39;AIA&#39;, &#39;ISO-3166-1&#39; ],
+  [ &#39;l&#39;, &#39;660&#39;, &#39;ISO-3166-1&#39;],
+  [ &#39;L&#39;, &#39;ISO-3166-3&#39; ],
+  [ &#39;l&#39;, &#39;DJ&#39;, &#39;ISO-3166-3&#39; ],
+  [ &#39;L&#39;, &#39;countryName&#39; ],
+  [ &#39;l&#39;, &#39;Anguilla&#39;, &#39;countryName&#39; ]
 ]</p>
 <p>Here two <code>alpha2</code> codes are returned, the original <code>ISO-3166-1</code> code, and the changed <code>ISO-3166-3</code> code. Since the other <code>ISO-3166-3</code> properties for <code>AI</code> are the same as their <code>ISO-3166-1</code> counter-parts, they are not included. </p>
 <a id="md:example-response" class="tsd-anchor"></a><h2><a href="#md:example-response">Example Response</a></h2><p>Here is the default response when <code>lat</code>, <code>lon</code>, <code>countryCode</code>, <code>regionName</code>, <strong>and</strong> <code>planet</code> are provided, with everything else default</p>
